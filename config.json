@@ -3,7 +3,10 @@
  "adsenseClient": "",
  "adsHeader": "",
  "gaId": "",
+ "gaPropertyId": "",
+ "gscProperty": "https://viptools.online/",
  "gscVerification": "",
+ "bingVerification": "",
  "tools": [
   {
    "slug": "word-counter",
@@ -156,4 +159,4 @@
    "enabled": true
   }
  ]
-}
+  }
