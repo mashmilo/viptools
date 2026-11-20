@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Admin</title><link rel="stylesheet" href="/style.css"></head><body class="admin">
+<header><span class="brand"><img src="/logo.svg" alt="" width="36" height="36"><span>Admin</span></span></header>
+<main><label for="pw">Admin password</label><input id="pw" type="password"><button id="in">Sign in</button>
+<div id="app" hidden>
+<h2>Tools</h2><div id="tl"></div>
+<h3>Add or edit a tool</h3><p class="lead">Paste the tool JSON from Claude and save. Live instantly. "Blank template" shows every option.</p>
+<textarea id="tj" style="min-height:260px"></textarea><button id="st">Save tool</button><button id="tb">Blank template</button><button id="ex">Example</button>
+<h2>Pages</h2><div id="pl"></div>
+<h3>Add or edit a page</h3><p class="lead">Create any page (or replace About, Privacy Policy, Terms, Contact, Disclaimer by using the same slug).</p>
+<textarea id="pj" style="min-height:160px"></textarea><button id="sp">Save page</button><button id="pb">Blank template</button>
+<h2>Site settings</h2><div id="sf"></div>
+<label>API connections (JSON). Tools call them at /api/p/NAME</label><textarea id="apis">{}</textarea>
+<button id="sc">Save settings</button> <span id="msg"></span></div></main>
+<script>
+const $=s=>document.querySelector(s),e=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');let C={},L=[],G=[];const H=()=>({'x-admin-token':$('#pw').value});
+const F=[['siteName','Site name'],['email','Contact email (shown on Contact and Privacy pages)'],['logoUrl','Logo URL (empty = default logo)'],['faviconUrl','Favicon URL (empty = logo)'],['homeTitle','Homepage SEO title'],['homeDesc','Homepage meta description'],['homeH1','Homepage heading'],['homeLead','Homepage subheading'],['homeText','Homepage extra text (HTML, good for SEO)','t'],['nav','Header menu, one per line: Label | /url','t'],['footerText','Footer text'],['headCode','Head code (AdSense script, site verification, analytics)','t'],['footerCode','Code at the end of every page','t'],['customCss','Custom CSS','t'],['adsTop','Ad code: top of every page','t'],['adsMid','Ad code: inside tool pages after the tool','t'],['adsBottom','Ad code: bottom of every page','t'],['adsTxt','ads.txt content','t'],['robotsTxt','robots.txt (empty = safe default with sitemap)','t']];
+$('#sf').innerHTML=F.map(([k,l,t])=>`<label for="f_${k}">${l}</label>`+(t?`<textarea id="f_${k}"></textarea>`:`<input id="f_${k}">`)).join('');
+const post=async b=>{const r=await fetch('/api/admin',{method:'POST',headers:H(),body:JSON.stringify(b)});$('#msg').textContent=r.ok?'Saved':await r.text();if(!r.ok)alert(await r.clone().text());return r.ok?r.json():null};
+function rows(el,l,k){el.innerHTML=l.length?l.map(t=>`<div class="row"><span>${e(t.name||t.title)} <small>${k=='t'?'/tools/':'/'}${e(t.slug)}${t.noindex?' (noindex)':''}</small></span>${k=='t'?`<button data-k="t" data-a="o" data-s="${e(t.slug)}">${t.on===false?'Turn on':'Turn off'}</button>`:''}<button data-k="${k}" data-a="e" data-s="${e(t.slug)}">Edit</button><button data-k="${k}" data-a="d" data-s="${e(t.slug)}">Delete</button></div>`).join(''):'<p>None yet.</p>'}
+const draw=d=>{if(!d)return;L=d.tools;G=d.pages;rows($('#tl'),L,'t');rows($('#pl'),G,'p')};
+$('#in').onclick=async()=>{const r=await fetch('/api/admin',{headers:H()});if(!r.ok){alert('Wrong password');return}const d=await r.json();C=d.config;F.forEach(([k])=>$('#f_'+k).value=C[k]||'');$('#apis').value=JSON.stringify(C.apis||{},null,2);draw(d);$('#app').hidden=false};
+document.onclick=async ev=>{const b=ev.target.closest('[data-a]');if(!b)return;const{k,a,s}=b.dataset;
+if(a=='e'){const r=await fetch('/api/admin?'+(k=='t'?'slug=':'page=')+s,{headers:H()});$(k=='t'?'#tj':'#pj').value=JSON.stringify(await r.json(),null,2);$(k=='t'?'#tj':'#pj').scrollIntoView()}
+else if(a=='d'){if(confirm('Delete '+s+'?'))draw(await post({a:k=='t'?'del':'pdel',slug:s}))}
+else draw(await post({a:'toggle',slug:s,on:L.find(x=>x.slug==s).on===false}))};
+const js=id=>{try{return JSON.parse($(id).value)}catch(x){alert('Invalid JSON: '+x.message)}};
+$('#st').onclick=async()=>{const t=js('#tj');if(t)draw(await post({a:'tool',tool:t}))};
+$('#sp').onclick=async()=>{const p=js('#pj');if(p)draw(await post({a:'page',pg:p}))};
+$('#tb').onclick=()=>$('#tj').value=JSON.stringify({slug:'',name:'',cat:'Tools',title:'',h1:'',desc:'',tags:[],image:'',featured:false,order:100,noindex:false,body:'<p>Long SEO text (HTML allowed)</p>',faq:[['Question','Answer']],html:'',css:'',js:''},null,2);
+$('#pb').onclick=()=>$('#pj').value=JSON.stringify({slug:'',title:'',desc:'',body:'<p>Page content (HTML)</p>',footer:true,noindex:false},null,2);
+$('#ex').onclick=()=>$('#tj').value=JSON.stringify({slug:'word-counter',name:'Word Counter',cat:'Text Tools',title:'Word Counter: Count Words & Characters Online',h1:'Word Counter',desc:'Count words, characters and sentences instantly. Free, private, no sign-up.',tags:['word count','text','character count'],image:'',featured:true,order:1,noindex:false,body:'<p>Paste or type text to see live counts. Everything runs in your browser, so your text is never uploaded.</p>',faq:[['Is my text stored?','No. Counting happens locally in your browser.']],html:'<label for="t">Your text</label><textarea id="t"></textarea><pre id="o"></pre>',css:'',js:'('+(()=>{const t=document.getElementById('t'),o=document.getElementById('o');t.oninput=()=>{const x=t.value.trim(),w=x?x.split(/\s+/).length:0;o.textContent='Words: '+w+'\nCharacters: '+t.value.length+'\nSentences: '+((x.match(/[.!?]+/g)||[]).length)};t.oninput()}).toString()+')()'},null,2);
+$('#sc').onclick=async()=>{let apis;try{apis=JSON.parse($('#apis').value||'{}')}catch(x){alert('API connections must be valid JSON');return}F.forEach(([k])=>C[k]=$('#f_'+k).value);C.apis=apis;await post({a:'config',config:C})};
+</script></body></html>
