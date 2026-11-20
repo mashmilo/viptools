@@ -1,4 +1,8 @@
 (function(){
+  // Load the current stylesheet with a version number and remove any old copy
+  document.querySelectorAll('link[href^="/style.css"]').forEach(function(l){l.parentNode.removeChild(l)});
+  var css=document.createElement('link');css.rel='stylesheet';css.href='/style.css?v=5';document.head.appendChild(css);
+
   var ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   var ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
   var ICON_MENU='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
@@ -60,12 +64,10 @@
     applyTheme(currentTheme());
   }
 
-  // Replace static header/footer on every page for consistent design
   var oldH=document.querySelector('body > header');if(oldH)oldH.replaceWith(header());else document.body.prepend(header());
   var oldF=document.querySelector('body > footer');if(oldF)oldF.replaceWith(footer());else document.body.append(footer());
   applyTheme(currentTheme());
 
-  // Config-driven: analytics, verification, ads, tool grid + search
   fetch('/config.json?'+Date.now()).then(function(r){return r.json()}).then(function(c){
     var h=document.head;
     if(c.gscVerification){var m=document.createElement('meta');m.name='google-site-verification';m.content=c.gscVerification;h.append(m)}
