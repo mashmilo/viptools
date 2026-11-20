@@ -1,0 +1,6 @@
+fetch('/config.json?'+Date.now()).then(r=>r.json()).then(c=>{const h=document.head;if(c.gscVerification){const m=document.createElement('meta');m.name='google-site-verification';m.content=c.gscVerification;h.append(m)}
+if(c.gaId){const s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id='+c.gaId;h.append(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};gtag('js',new Date);gtag('config',c.gaId)}
+if(c.adsenseClient){const s=document.createElement('script');s.async=1;s.crossOrigin='anonymous';s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+c.adsenseClient;h.append(s)}
+document.querySelectorAll('.ad').forEach(a=>{if(c.adsHeader)a.innerHTML=c.adsHeader});
+const g=document.getElementById('grid');if(g)g.innerHTML=c.tools.filter(t=>t.enabled).map(t=>`<a class="card" href="${t.html?'/tool.html?s='+t.slug:'/tools/'+t.slug+'/'}"><h3>${t.name}</h3><p>${t.desc}</p></a>`).join('');
+const me=document.body.dataset.tool;if(me){const t=c.tools.find(x=>x.slug===me);if(t&&!t.enabled){document.getElementById('app').innerHTML='<p>This tool is temporarily unavailable.</p>'}}})
