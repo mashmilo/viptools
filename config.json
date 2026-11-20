@@ -1,0 +1,159 @@
+{
+ "siteName": "VipTools",
+ "adsenseClient": "",
+ "adsHeader": "",
+ "gaId": "",
+ "gscVerification": "",
+ "tools": [
+  {
+   "slug": "word-counter",
+   "name": "Word Counter",
+   "desc": "Count words, characters, sentences and reading time instantly.",
+   "enabled": true
+  },
+  {
+   "slug": "password-generator",
+   "name": "Password Generator",
+   "desc": "Create strong, random passwords securely in your browser.",
+   "enabled": true
+  },
+  {
+   "slug": "json-formatter",
+   "name": "JSON Formatter",
+   "desc": "Format, validate and minify JSON with clear error messages.",
+   "enabled": true
+  },
+  {
+   "slug": "case-converter",
+   "name": "Case Converter",
+   "desc": "Convert text to UPPERCASE, lowercase, Title Case or Sentence case.",
+   "enabled": true
+  },
+  {
+   "slug": "lorem-ipsum-generator",
+   "name": "Lorem Ipsum Generator",
+   "desc": "Generate placeholder text for designs and mockups.",
+   "enabled": true
+  },
+  {
+   "slug": "base64-encoder-decoder",
+   "name": "Base64 Encoder & Decoder",
+   "desc": "Encode text to Base64 or decode Base64 back to text.",
+   "enabled": true
+  },
+  {
+   "slug": "url-encoder-decoder",
+   "name": "URL Encoder & Decoder",
+   "desc": "Encode or decode URLs and query strings safely.",
+   "enabled": true
+  },
+  {
+   "slug": "length-converter",
+   "name": "Length Converter",
+   "desc": "Convert between meters, kilometers, miles, feet, inches and more.",
+   "enabled": true
+  },
+  {
+   "slug": "age-calculator",
+   "name": "Age Calculator",
+   "desc": "Calculate your exact age in years, months and days.",
+   "enabled": true
+  },
+  {
+   "slug": "percentage-calculator",
+   "name": "Percentage Calculator",
+   "desc": "Find a percentage of a number or what percent one number is of another.",
+   "enabled": true
+  },
+  {
+   "slug": "bmi-calculator",
+   "name": "BMI Calculator",
+   "desc": "Calculate your Body Mass Index from weight and height.",
+   "enabled": true
+  },
+  {
+   "slug": "emi-calculator",
+   "name": "EMI Loan Calculator",
+   "desc": "Calculate monthly loan EMI, total interest and total payment.",
+   "enabled": true
+  },
+  {
+   "slug": "random-number-generator",
+   "name": "Random Number Generator",
+   "desc": "Pick random numbers within any range.",
+   "enabled": true
+  },
+  {
+   "slug": "color-converter",
+   "name": "Color Converter",
+   "desc": "Convert colors between HEX, RGB and HSL.",
+   "enabled": true
+  },
+  {
+   "slug": "remove-duplicate-lines",
+   "name": "Remove Duplicate Lines",
+   "desc": "Delete repeated lines from any list.",
+   "enabled": true
+  },
+  {
+   "slug": "slug-generator",
+   "name": "Slug Generator",
+   "desc": "Turn titles into clean SEO-friendly URL slugs.",
+   "enabled": true
+  },
+  {
+   "slug": "meta-tag-generator",
+   "name": "Meta Tag Generator",
+   "desc": "Create SEO title, description and Open Graph tags.",
+   "enabled": true
+  },
+  {
+   "slug": "youtube-playlist-length-calculator",
+   "name": "YouTube Playlist Length Calculator",
+   "desc": "Estimate total playlist watch time at different speeds.",
+   "enabled": true
+  },
+  {
+   "slug": "timestamp-converter",
+   "name": "Unix Timestamp Converter",
+   "desc": "Convert Unix timestamps to readable dates and back.",
+   "enabled": true
+  },
+  {
+   "slug": "text-to-binary",
+   "name": "Text to Binary Converter",
+   "desc": "Convert text to binary code and binary back to text.",
+   "enabled": true
+  },
+  {
+   "slug": "compound-interest-calculator",
+   "name": "Compound Interest Calculator",
+   "desc": "See how savings and investments grow over time.",
+   "enabled": true
+  },
+  {
+   "slug": "discount-calculator",
+   "name": "Discount Calculator",
+   "desc": "Calculate the sale price and how much you save.",
+   "enabled": true
+  },
+  {
+   "slug": "date-difference-calculator",
+   "name": "Date Difference Calculator",
+   "desc": "Find the number of days between two dates.",
+   "enabled": true
+  },
+  {
+   "slug": "uuid-generator",
+   "name": "UUID Generator",
+   "desc": "Generate random version 4 UUIDs.",
+   "enabled": true
+  },
+  {
+   "slug": "image-compressor",
+   "name": "Image Compressor",
+   "desc": "Reduce image file size in your browser without uploading.",
+   "enabled": true
+  }
+ ]
+}
