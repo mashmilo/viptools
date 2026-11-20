@@ -1,6 +1,7 @@
 (function(){
   var ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   var ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+  var ICON_MENU='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
   var LOGO='<svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="vtg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#vtg)"/><path d="M16 20l16 28 16-28" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   function currentTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light'}
@@ -8,7 +9,7 @@
     document.documentElement.setAttribute('data-theme',t);
     try{localStorage.setItem('vt-theme',t)}catch(e){}
     var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='dark'?'#0b1020':'#6366f1';
-    document.querySelectorAll('.theme-btn').forEach(function(b){b.innerHTML=t==='dark'?ICON_SUN:ICON_MOON;b.setAttribute('aria-label','Switch to '+(t==='dark'?'light':'dark')+' mode')});
+    document.querySelectorAll('.theme-btn:not(.menu-btn)').forEach(function(b){b.innerHTML=t==='dark'?ICON_SUN:ICON_MOON;b.setAttribute('aria-label','Switch to '+(t==='dark'?'light':'dark')+' mode')});
   }
 
   function header(){
@@ -23,7 +24,7 @@
           '<a class="hide-m" href="/contact.html">Contact</a>'+
           '<a class="hide-m" href="/privacy.html">Privacy</a>'+
           '<button class="theme-btn" type="button" aria-label="Toggle theme"></button>'+
-          '<button class="theme-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" style="font-size:18px">&#9776;</button>'+
+          '<button class="theme-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false">'+ICON_MENU+'</button>'+
         '</nav>'+
       '</div>'+
       '<div class="mobile-menu" id="mm">'+
@@ -55,7 +56,7 @@
     document.addEventListener('click',function(e){if(!dd.contains(e.target)){dd.classList.remove('open');b.setAttribute('aria-expanded','false')}});
     var mb=document.querySelector('.menu-btn'),mmEl=document.getElementById('mm');
     mb.addEventListener('click',function(){var o=mmEl.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
-    document.querySelector('.theme-btn').addEventListener('click',function(){applyTheme(currentTheme()==='dark'?'light':'dark')});
+    document.querySelector('.theme-btn:not(.menu-btn)').addEventListener('click',function(){applyTheme(currentTheme()==='dark'?'light':'dark')});
     applyTheme(currentTheme());
   }
 
