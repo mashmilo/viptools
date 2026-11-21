@@ -1,11 +1,11 @@
 {
  "siteName": "VipTools",
- "ownerName": "Luban Mashrafee",
+ "ownerName": "",
  "adsenseClient": "",
  "adsHeader": "",
  "gaId": "",
  "gaPropertyId": "",
- "gscVerification": "pyr9beg4WLXGPE4yFE6K8ezlbzwTANmOP-o8O66Gf_0",
+ "gscVerification": "",
  "bingVerification": "",
  "gscProperty": "https://viptools.online/",
  "providers": [
@@ -24,5 +24,6 @@
    "enabled": true
   }
  ],
- "toolOverrides": {}
+ "toolOverrides": {},
+ "indexnowKey": "72cb221c173dd323a3a8db699ba963ff"
 }
