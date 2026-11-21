@@ -11,8 +11,9 @@ export function activeProviders(config, tool, env) {
   return (config.providers || []).filter(p => p.enabled && p.tool === tool && env[p.secret]);
 }
 
-export function isAdmin(request) {
-  return !!request.headers.get('Cf-Access-Authenticated-User-Email');
+// Only the middleware (functions/_middleware.js) sets this flag, after the password check.
+export function isAdmin(context) {
+  return !!(context.data && context.data.isAdmin);
 }
 
 // Calls a provider list in order. Quota and rate-limit errors move to the next key.
