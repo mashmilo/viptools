@@ -58,8 +58,9 @@ function validate(body) {
   return { out };
 }
 
-export async function onRequestPut({ request, env }) {
-  if (!isAdmin(request)) return new Response('Sign-in required', { status: 401 });
+export async function onRequestPut(context) {
+  const { request, env } = context;
+  if (!isAdmin(context)) return new Response('Sign-in required', { status: 401 });
   if (!env.GITHUB_TOKEN || !env.GITHUB_REPO) return new Response('Server is not configured', { status: 500 });
 
   const body = await request.json().catch(() => null);
@@ -76,7 +77,7 @@ export async function onRequestPut({ request, env }) {
 
   const put = await fetch(api, {
     method: 'PUT', headers,
-    body: JSON.stringify({ message: 'Admin update by ' + request.headers.get('Cf-Access-Authenticated-User-Email'), content: enc(JSON.stringify(merged, null, 1) + '\n'), sha: cj.sha }),
+    body: JSON.stringify({ message: 'Admin update by ' + (context.data.user || 'admin'), content: enc(JSON.stringify(merged, null, 1) + '\n'), sha: cj.sha }),
   });
   if (!put.ok) return new Response('GitHub save failed (' + put.status + ')', { status: 502 });
   return new Response(JSON.stringify({ ok: true, saved: Object.keys(v.out) }), { headers: { 'content-type': 'application/json' } });
