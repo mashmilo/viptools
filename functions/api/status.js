@@ -2,7 +2,7 @@
 import { loadConfig, isAdmin } from './_providers.js';
 
 export async function onRequestGet(context) {
-  if (!isAdmin(context.request)) return new Response('Sign-in required', { status: 401 });
+  if (!isAdmin(context)) return new Response('Sign-in required', { status: 401 });
   const config = await loadConfig(context);
   const list = (config.providers || []).map(p => ({
     id: p.id, label: p.label, tool: p.tool, secret: p.secret, enabled: !!p.enabled,
