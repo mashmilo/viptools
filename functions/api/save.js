@@ -68,17 +68,23 @@ export async function onRequestPut(context) {
   const v = validate(body);
   if (v.error) return bad(v.error);
 
-  const api = 'https://api.github.com/repos/' + env.GITHUB_REPO + '/contents/src/config.json';
-  const headers = { Authorization: 'Bearer ' + env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'User-Agent': 'viptools-admin' };
-  const cur = await fetch(api, { headers });
-  if (!cur.ok) return new Response('Could not read config', { status: 502 });
-  const cj = await cur.json();
-  const merged = { ...JSON.parse(dec(cj.content)), ...v.out };
-
-  const put = await fetch(api, {
-    method: 'PUT', headers,
-    body: JSON.stringify({ message: 'Admin update by ' + (context.data.user || 'admin'), content: enc(JSON.stringify(merged, null, 1) + '\n'), sha: cj.sha }),
-  });
-  if (!put.ok) return new Response('GitHub save failed (' + put.status + ')', { status: 502 });
+  try {
+    const api = 'https://api.github.com/repos/' + env.GITHUB_REPO + '/contents/src/config.json';
+    const headers = { Authorization: 'Bearer ' + env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'User-Agent': 'viptools-admin', 'X-GitHub-Api-Version': '2022-11-28' };
+    const cur = await fetch(api, { headers });
+    if (!cur.ok) return new Response('GitHub could not read src/config.json (status ' + cur.status + '). Check GITHUB_REPO and the token permissions.', { status: 502 });
+    const cj = await cur.json();
+    const merged = { ...JSON.parse(dec(cj.content)), ...v.out };
+    const put = await fetch(api, {
+      method: 'PUT', headers,
+      body: JSON.stringify({ message: 'Admin update by ' + (context.data.user || 'admin'), content: enc(JSON.stringify(merged, null, 1) + '\n'), sha: cj.sha }),
+    });
+    if (!put.ok) {
+      const detail = await put.text().catch(() => '');
+      return new Response('GitHub save failed (status ' + put.status + '): ' + detail.slice(0, 200), { status: 502 });
+    }
+  } catch (e) {
+    return new Response('Save error: ' + (e && e.message ? e.message : String(e)), { status: 500 });
+  }
   return new Response(JSON.stringify({ ok: true, saved: Object.keys(v.out) }), { headers: { 'content-type': 'application/json' } });
-}
+    }
