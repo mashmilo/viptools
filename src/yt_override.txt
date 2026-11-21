@@ -1,0 +1,65 @@
+<label>YouTube playlist link or ID <input id="pl" placeholder="https://www.youtube.com/playlist?list=PL..." autocomplete="off" inputmode="url"></label>
+<button id="fetchPl" type="button">Get playlist length</button>
+<p id="plMsg" class="muted" aria-live="polite"></p>
+<div id="plBox" hidden>
+  <h3 id="plTitle" style="margin:8px 0 0"></h3>
+  <div class="stats" id="plOut"></div>
+  <p class="muted" id="plNote"></p>
+</div>
+<hr>
+<p class="muted">Or estimate without a link:</p>
+<label>Number of videos <input id="v" type="number" value="30" min="0"></label>
+<label>Average length (minutes) <input id="m" type="number" value="10" min="0"></label>
+<div class="stats" id="o"></div>
+===SCRIPT===
+const $ = id => document.getElementById(id);
+const fmt = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+  return h ? h + 'h ' + m + 'm' : (m ? m + 'm ' + x + 's' : x + 's'); };
+const SPEEDS = [1, 1.25, 1.5, 2];
+function speedRows(total) {
+  return SPEEDS.map(sp => '<div><b>' + fmt(total / sp) + '</b>' + sp + 'x</div>').join('');
+}
+
+/* Manual estimate */
+function manual() {
+  const t = (+$('v').value || 0) * (+$('m').value || 0) * 60;
+  $('o').innerHTML = speedRows(t);
+}
+['v', 'm'].forEach(id => $(id).addEventListener('input', manual));
+manual();
+
+/* Real playlist lookup through the site's own /api/yt endpoint */
+function playlistId(s) {
+  s = s.trim();
+  try { const q = new URL(s).searchParams.get('list'); if (q) return q; } catch (e) {}
+  const m = /[?&]list=([A-Za-z0-9_-]+)/.exec(s);
+  if (m) return m[1];
+  return /^(PL|UU|FL|OLAK)[A-Za-z0-9_-]+$/.test(s) ? s : null;
+}
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+$('fetchPl').onclick = async () => {
+  const id = playlistId($('pl').value);
+  const msg = $('plMsg'), box = $('plBox');
+  box.hidden = true;
+  if (!id) { msg.textContent = 'Paste a playlist link that contains list=... or a playlist ID.'; return; }
+  msg.textContent = 'Reading playlist...';
+  $('fetchPl').disabled = true;
+  try {
+    const r = await fetch('/api/yt?list=' + encodeURIComponent(id));
+    const d = await r.json();
+    if (!r.ok) { msg.textContent = d.error === 'Playlist not found or private'
+      ? 'That playlist was not found. It may be private or the link may be wrong.'
+      : (d.error || 'Could not read this playlist right now. Try again later, or use the manual estimate below.'); return; }
+    msg.textContent = '';
+    $('plTitle').textContent = d.title;
+    $('plOut').innerHTML = speedRows(d.totalSeconds);
+    let note = d.videos + ' videos counted';
+    if (d.unavailable) note += ', ' + d.unavailable + ' deleted or private videos skipped';
+    if (d.truncated) note += '. This playlist is longer than the 1000-video limit, so the total is partial';
+    $('plNote').textContent = note + '.';
+    box.hidden = false;
+  } catch (e) {
+    msg.textContent = 'Network error. Check your connection and try again.';
+  } finally { $('fetchPl').disabled = false; }
+};
