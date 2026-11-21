@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>VipTools Admin</title>
+<style>
+:root{--p:#6366f1;--ok:#1a8a4a;--bad:#c2392b;--bg:#f5f6fb;--card:#fff;--tx:#161a2b;--mut:#66708a;--bd:#dfe3ef}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1020;--card:#151b2e;--tx:#eceffb;--mut:#9aa3c0;--bd:#2a3350}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);line-height:1.5}
+header{background:linear-gradient(135deg,#6366f1,#06b6d4);color:#fff;padding:16px 18px}
+header h1{margin:0;font-size:18px}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;max-width:900px;margin:14px auto 0;padding:0 12px}
+nav.tabs button{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer}
+nav.tabs button.on{background:var(--p);color:#fff;border-color:var(--p)}
+main{max-width:900px;margin:14px auto 40px;padding:0 12px}
+.sec{display:none}.sec.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:14px}
+h2{margin:0 0 6px;font-size:18px}
+p.mut,small{color:var(--mut)}
+label{display:block;font-weight:600;font-size:14px;margin-top:12px}
+input[type=text],input[type=url],input:not([type]),textarea,select{width:100%;padding:10px;margin-top:4px;border:1px solid var(--bd);border-radius:8px;font:inherit;background:var(--bg);color:var(--tx)}
+textarea{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:13px}
+input[type=checkbox]{width:18px;height:18px;margin:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:620px){.grid2{grid-template-columns:1fr}}
+button.act{background:var(--p);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px}
+button.act:disabled{opacity:.5}
+button.ghost{background:none;color:var(--p);border:1px solid var(--p);border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;margin-top:14px}
+.status{margin-top:10px;font-size:14px;min-height:20px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.row:last-child{border-bottom:0}
+.row .info{flex:1 1 260px;min-width:0}
+.row .info b{display:block}
+.row select{width:auto;flex:0 0 auto}
+.row input.name{flex:1 1 180px}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;margin-left:6px}
+.pill.on{background:#dcfce7;color:#166534}.pill.off{background:#fee2e2;color:#991b1b}
+.out{margin-top:10px;font-size:14px}
+.note{background:var(--bg);border:1px dashed var(--bd);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--mut);margin-top:12px}
+</style>
+</head>
+<body>
+<header><h1>VipTools Admin</h1></header>
+<nav class="tabs" role="tablist">
+  <button class="on" data-t="site">Site and ads</button>
+  <button data-t="tools">Tools</button>
+  <button data-t="apis">API keys</button>
+</nav>
+<main>
+
+<section class="sec on" id="t-site">
+  <div class="card">
+    <h2>Site and ads</h2>
+    <p class="mut">Saved to the repo, then the site rebuilds and redeploys. Usually live within a few minutes.</p>
+    <label>Owner name (shown on the About page)<input type="text" id="ownerName" maxlength="100"></label>
+    <label>Site name<input type="text" id="siteName" maxlength="60"></label>
+    <div class="grid2">
+      <label>AdSense publisher ID <small>ca-pub-XXXXXXXXXXXXXXXX</small><input type="text" id="adsenseClient" autocomplete="off"></label>
+      <label>Google Analytics ID <small>G-XXXXXXXXXX</small><input type="text" id="gaId" autocomplete="off"></label>
+    </div>
+    <div class="grid2">
+      <label>Google Analytics property ID <small>numbers only</small><input type="text" id="gaPropertyId" autocomplete="off"></label>
+      <label>Google Search Console verification code<input type="text" id="gscVerification" autocomplete="off"></label>
+    </div>
+    <label>Bing verification code<input type="text" id="bingVerification" autocomplete="off"></label>
+    <label>Ad slot HTML <small>optional, placed in every ad slot</small><textarea id="adsHeader"></textarea></label>
+    <button class="act" id="saveSite">Save site settings</button>
+    <div class="status" id="siteStatus"></div>
+  </div>
+</section>
+
+<section class="sec" id="t-tools">
+  <div class="card">
+    <h2>Tools</h2>
+    <p class="mut">Turn tools on or off, and change their name, short description or category. Disabled tools are removed from the site, the menu and the sitemap at the next build.</p>
+    <div id="toolList"></div>
+    <button class="act" id="saveTools">Save tool changes</button>
+    <div class="status" id="toolStatus"></div>
+  </div>
+</section>
+
+<section class="sec" id="t-apis">
+  <div class="card">
+    <h2>API keys</h2>
+    <p class="mut">Keys are stored only as Cloudflare environment variables. This page shows whether each one is set; it never shows the key itself. Add the key in Cloudflare Pages → Settings → Environment variables, then redeploy.</p>
+    <div id="providerList"></div>
+    <button class="act" id="saveProviders">Save API settings</button>
+    <div class="status" id="providerStatus"></div>
+    <div class="note">Add a new API: a developer adds the endpoint code in the functions folder and a provider entry in this list. The key is then added in Cloudflare with the secret name shown here.</div>
+  </div>
+  <div class="card">
+    <h2>Test a YouTube playlist</h2>
+    <label>Playlist link<input type="url" id="testPl" placeholder="https://www.youtube.com/playlist?list=..." autocomplete="off"></label>
+    <button class="ghost" id="testBtn">Test</button>
+    <div class="out" id="testOut"></div>
+  </div>
+</section>
+
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SITE_FIELDS = ['ownerName','siteName','adsenseClient','gaId','gaPropertyId','gscVerification','bingVerification','adsHeader'];
+const CATS = ['Text tools','Generators','Developer tools','Calculators and converters','Finance calculators','Media tools'];
+let CFG = {tools: [], providers: []};
+let TOOL_STATE = {};
+let PROVIDERS = [];
+
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.id === 't-' + b.dataset.t));
+});
+
+function say(el, msg, ok) { el.className = 'status ' + (ok ? 'ok' : 'bad'); el.textContent = msg; }
+
+async function post(body, btn, statusEl) {
+  btn.disabled = true; say(statusEl, 'Saving...', true);
+  try {
+    const r = await fetch('/api/save', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const text = await r.text();
+    if (r.ok) say(statusEl, 'Saved. The site will update after the next deploy (a few minutes).', true);
+    else say(statusEl, 'Not saved: ' + text, false);
+  } catch (e) { say(statusEl, 'Not saved: ' + e.message, false); }
+  finally { btn.disabled = false; }
+}
+
+function renderTools() {
+  $('toolList').innerHTML = CFG.tools.map(t => {
+    const s = TOOL_STATE[t.slug];
+    return '<div class="row" data-slug="' + esc(t.slug) + '">' +
+      '<div class="info"><b>' + esc(s.name) + ' <small>/tools/' + esc(t.slug) + '/</small></b>' +
+      '<input class="name" type="text" maxlength="60" value="' + esc(s.name) + '" data-f="name" aria-label="Name">' +
+      '<input type="text" maxlength="160" value="' + esc(s.desc) + '" data-f="desc" aria-label="Description" style="margin-top:6px">' +
+      '</div>' +
+      '<select data-f="category" aria-label="Category">' + CATS.map(c => '<option' + (c === s.category ? ' selected' : '') + '>' + esc(c) + '</option>').join('') + '</select>' +
+      '<label style="margin:0;display:flex;gap:6px;align-items:center"><input type="checkbox" data-f="enabled"' + (s.enabled ? ' checked' : '') + '> On</label>' +
+      '</div>';
+  }).join('');
+  $('toolList').querySelectorAll('[data-f]').forEach(el => el.addEventListener('input', e => {
+    const slug = e.target.closest('.row').dataset.slug, f = e.target.dataset.f;
+    TOOL_STATE[slug][f] = f === 'enabled' ? e.target.checked : e.target.value;
+  }));
+  $('toolList').querySelectorAll('.row').forEach(row => row.addEventListener('change', e => {
+    const slug = row.dataset.slug, f = e.target.dataset.f;
+    if (f === 'enabled' || f === 'category') TOOL_STATE[slug][f] = f === 'enabled' ? e.target.checked : e.target.value;
+  }));
+}
+
+function renderProviders() {
+  $('providerList').innerHTML = PROVIDERS.map((p, i) =>
+    '<div class="row"><div class="info"><b>' + esc(p.label) + '<span class="pill ' + (p.secretSet ? 'on' : 'off') + '">' +
+    (p.secretSet ? 'key set' : 'key missing') + '</span></b><small>Tool: ' + esc(p.tool) + ' · secret name: <code>' + esc(p.secret) + '</code></small></div>' +
+    '<label style="margin:0;display:flex;gap:6px;align-items:center"><input type="checkbox" data-i="' + i + '"' + (p.enabled ? ' checked' : '') + '> Use this key</label></div>'
+  ).join('') || '<p class="mut">No API keys configured.</p>';
+  $('providerList').querySelectorAll('input[type=checkbox]').forEach(cb => cb.onchange = () => { PROVIDERS[cb.dataset.i].enabled = cb.checked; });
+}
+
+async function load() {
+  try {
+    CFG = await (await fetch('/config.json?' + Date.now())).json();
+    SITE_FIELDS.forEach(f => { if (CFG[f] !== undefined) $(f).value = CFG[f]; });
+    CFG.tools.forEach(t => TOOL_STATE[t.slug] = { name: t.name, desc: t.desc, category: t.category, enabled: t.enabled });
+    renderTools();
+  } catch (e) { say($('siteStatus'), 'Could not load settings: ' + e.message, false); }
+  try {
+    const r = await fetch('/api/status', { cache: 'no-store' });
+    if (r.ok) { PROVIDERS = (await r.json()).providers; renderProviders(); }
+    else $('providerList').innerHTML = '<p class="bad">Sign in through Cloudflare Access to manage API keys.</p>';
+  } catch (e) { $('providerList').innerHTML = '<p class="bad">Could not load API status.</p>'; }
+}
+
+$('saveSite').onclick = () => {
+  const body = {}; SITE_FIELDS.forEach(f => body[f] = $(f).value.trim());
+  post(body, $('saveSite'), $('siteStatus'));
+};
+$('saveTools').onclick = () => post({ toolOverrides: TOOL_STATE }, $('saveTools'), $('toolStatus'));
+$('saveProviders').onclick = () => post({ providers: PROVIDERS.map(p => ({ id: p.id, label: p.label, tool: p.tool, secret: p.secret, enabled: p.enabled })) }, $('saveProviders'), $('providerStatus'));
+
+function playlistId(s) {
+  s = s.trim();
+  try { const q = new URL(s).searchParams.get('list'); if (q) return q; } catch (e) {}
+  const m = /[?&]list=([A-Za-z0-9_-]+)/.exec(s);
+  if (m) return m[1];
+  return /^(PL|UU|FL|OLAK)[A-Za-z0-9_-]+$/.test(s) ? s : null;
+}
+$('testBtn').onclick = async () => {
+  const id = playlistId($('testPl').value), out = $('testOut');
+  if (!id) { out.innerHTML = '<span class="bad">Paste a link that contains list=...</span>'; return; }
+  out.textContent = 'Checking...';
+  try {
+    const r = await fetch('/api/yt?list=' + encodeURIComponent(id));
+    const d = await r.json();
+    if (!r.ok) { out.innerHTML = '<span class="bad">' + esc(d.error || 'Error') + '</span>'; return; }
+    out.innerHTML = '<span class="ok">Connected.</span> ' + esc(d.title) + '<br>' + d.videos + ' videos read, ' + d.unavailable + ' unavailable.';
+  } catch (e) { out.innerHTML = '<span class="bad">' + esc(e.message) + '</span>'; }
+};
+
+load();
+</script>
+</body>
+</html>
