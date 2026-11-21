@@ -1,0 +1,16 @@
+{
+ "siteName": "VipTools",
+ "ownerName": "",
+ "adsenseClient": "",
+ "adsHeader": "",
+ "gaId": "",
+ "gaPropertyId": "",
+ "gscVerification": "",
+ "bingVerification": "",
+ "gscProperty": "https://viptools.online/",
+ "providers": [
+  {"id": "yt-primary", "label": "YouTube API key (main account)", "tool": "youtube", "secret": "YT_API_KEY", "enabled": true},
+  {"id": "yt-backup", "label": "YouTube API key (backup account)", "tool": "youtube", "secret": "YT_API_KEY_2", "enabled": true}
+ ],
+ "toolOverrides": {}
+}
