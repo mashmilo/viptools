@@ -1,4 +1,4 @@
-import re, os, json, shutil, html, glob, sys
+import re, os, json, shutil, html, glob, sys, urllib.request
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 SRC = REPO + '/src'
@@ -558,3 +558,26 @@ cfg_out['tools'] = [{'slug': s_, 'name': T[s_]['name'], 'desc': T[s_]['desc'], '
 json.dump(cfg_out, open(OUT + '/config.json', 'w'), indent=1)
 
 print('built pages:', len(ENABLED), 'tools; disabled:', [s_ for s_ in T if s_ not in ENABLED])
+
+# ---- IndexNow (Bing and others): submit all URLs after each Cloudflare build ----
+def indexnow_submit():
+    key = (cfg.get('indexnowKey') or '').strip()
+    if not re.fullmatch(r'[a-f0-9]{8,128}', key):
+        return
+    with open(OUT + '/%s.txt' % key, 'w') as f:
+        f.write(key)
+    if os.environ.get('CF_PAGES') != '1':
+        print('IndexNow: key file written, submission skipped (not a Cloudflare build)')
+        return
+    urls = [BASE + u for u in all_urls]
+    body = json.dumps({'host': 'viptools.online', 'key': key,
+                       'keyLocation': BASE + '/%s.txt' % key, 'urlList': urls}).encode()
+    req = urllib.request.Request('https://api.indexnow.org/indexnow', data=body,
+                                 headers={'Content-Type': 'application/json; charset=utf-8'}, method='POST')
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            print('IndexNow: submitted', len(urls), 'URLs, status', r.status)
+    except Exception as e:
+        print('IndexNow: not accepted yet (the key file goes live with this deploy, so the next deploy should work):', e)
+
+indexnow_submit()
