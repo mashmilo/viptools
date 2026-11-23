@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>YouTube Timestamp Link Generator - Free Online Tool | VipTools</title><meta name="description" content="Create a YouTube link that starts at an exact time. Copy the short link, full link or embed URL."><link rel="canonical" href="https://viptools.online/tools/youtube-timestamp-link-generator/"><meta property="og:title" content="YouTube Timestamp Link Generator - Free Online Tool | VipTools"><meta property="og:description" content="Create a YouTube link that starts at an exact time. Copy the short link, full link or embed URL."><meta property="og:url" content="https://viptools.online/tools/youtube-timestamp-link-generator/"><meta property="og:type" content="website"><meta name="theme-color" content="#6366f1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css"><script src="/site.js" defer></script></head><body data-tool="youtube-timestamp-link-generator"><main class="w"><h1>YouTube Timestamp Link Generator</h1><p>Create a YouTube link that starts at an exact time. Copy the short link, full link or embed URL.</p><div class="ad"></div><div class="box" id="app"><label for="u">YouTube video link or ID</label><input id="u" type="text" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" inputmode="url"><div class="row"><label>Hours <input id="h" type="number" min="0" value="0"></label><label>Minutes <input id="m" type="number" min="0" value="0"></label><label>Seconds <input id="s" type="number" min="0" value="0"></label></div><p id="msg" class="muted" aria-live="polite"></p><div id="res" hidden><label for="l1">Short link</label><div class="copyrow"><input id="l1" readonly><button type="button" data-c="l1">Copy</button></div><label for="l2">Full link</label><div class="copyrow"><input id="l2" readonly><button type="button" data-c="l2">Copy</button></div><label for="l3">Embed URL (for web pages)</label><div class="copyrow"><input id="l3" readonly><button type="button" data-c="l3">Copy</button></div><p><a id="test" class="btn alt" target="_blank" rel="noopener noreferrer">Test the link</a> <span class="muted" id="tt"></span></p></div></div><div class="ad"></div><article><p>The YouTube Timestamp Link Generator builds a link that opens a video at an exact time. Enter the video link and the time, and copy the short link, the full link or the embed URL.</p><h2>How to use the YouTube Timestamp Link Generator</h2><p>Paste the video link, then set the hours, minutes and seconds where playback should start. The links update as you type. Press Copy next to the version you need, or press Test the link to check where it starts.</p><h2>Why use it</h2><p>Long videos are hard to share when only one part matters. A timestamp link takes the viewer straight to that moment, which helps in lessons, tutorials, comments and blog posts. The tool also converts the time to seconds for you, so there is no mental arithmetic.</p></article><script>
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function videoId(s){
+  s=(s||'').trim();
+  if(/^[A-Za-z0-9_-]{11}$/.test(s))return s;
+  let u;
+  try{u=new URL(/^https?:\/\//i.test(s)?s:'https://'+s)}catch(e){return null}
+  const h=u.hostname.replace(/^(www|m|music)\./,'');
+  let id=null;
+  if(h==='youtu.be')id=u.pathname.split('/')[1];
+  else if(h==='youtube.com'||h==='youtube-nocookie.com'){
+    if(u.pathname==='/watch')id=u.searchParams.get('v');
+    else{const m=/^\/(shorts|embed|live|v)\/([^/?#]+)/.exec(u.pathname);if(m)id=m[2]}
+  }
+  return id&&/^[A-Za-z0-9_-]{11}$/.test(id)?id:null;
+}
+function copyBtn(btn,text){
+  const old=btn.textContent;
+  const done=()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent=old,1500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done,()=>fallback());
+  else fallback();
+  function fallback(){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){}t.remove()}
+}
+
+function parseTime(v){
+  if(!v)return null;v=String(v).trim();
+  let m=/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/i.exec(v);
+  if(m&&(m[1]||m[2]||m[3]))return(+m[1]||0)*3600+(+m[2]||0)*60+(+m[3]||0);
+  m=/^(?:(\d+):)?(\d+):(\d+)$/.exec(v);
+  if(m)return(+m[1]||0)*3600+(+m[2])*60+(+m[3]);
+  return null;
+}
+function fromUrl(s){
+  try{const u=new URL(/^https?:\/\//i.test(s.trim())?s.trim():'https://'+s.trim());
+    return parseTime(u.searchParams.get('t')||u.searchParams.get('start')||(u.hash.match(/t=([^&]+)/)||[])[1])}catch(e){return null}
+}
+let lastUrl='';
+function split(t){return[Math.floor(t/3600),Math.floor(t%3600/60),t%60]}
+function build(){
+  const id=videoId($('u').value),msg=$('msg'),res=$('res');
+  if(!$('u').value.trim()){msg.textContent='';res.hidden=true;return}
+  if(!id){msg.textContent='Paste a YouTube video link such as https://www.youtube.com/watch?v=dQw4w9WgXcQ';res.hidden=true;return}
+  const t=Math.max(0,Math.floor((+$('h').value||0)*3600+(+$('m').value||0)*60+(+$('s').value||0)));
+  msg.textContent='';
+  $('l1').value='https://youtu.be/'+id+(t?'?t='+t:'');
+  $('l2').value='https://www.youtube.com/watch?v='+id+(t?'&t='+t+'s':'');
+  $('l3').value='https://www.youtube.com/embed/'+id+(t?'?start='+t:'');
+  $('test').href=$('l2').value;
+  const[h,m,s]=split(t);
+  $('tt').textContent='Starts at '+(h?h+'h ':'')+m+'m '+s+'s ('+t+' seconds)';
+  res.hidden=false;
+}
+$('u').addEventListener('input',()=>{
+  const v=$('u').value;
+  if(v!==lastUrl){lastUrl=v;const t=fromUrl(v);if(t!=null){const[h,m,s]=split(t);$('h').value=h;$('m').value=m;$('s').value=s}}
+  build();
+});
+['h','m','s'].forEach(i=>$(i).addEventListener('input',build));
+document.querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>copyBtn(b,$(b.dataset.c).value));
+</script></main></body></html>

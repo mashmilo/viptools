@@ -1,0 +1,57 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>YouTube Tag Extractor - Free Online Tool | VipTools</title><meta name="description" content="Paste a YouTube video link to see its hidden tags and hashtags, count the characters and copy them in one click."><link rel="canonical" href="https://viptools.online/tools/youtube-tag-extractor/"><meta property="og:title" content="YouTube Tag Extractor - Free Online Tool | VipTools"><meta property="og:description" content="Paste a YouTube video link to see its hidden tags and hashtags, count the characters and copy them in one click."><meta property="og:url" content="https://viptools.online/tools/youtube-tag-extractor/"><meta property="og:type" content="website"><meta name="theme-color" content="#6366f1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css"><script src="/site.js" defer></script></head><body data-tool="youtube-tag-extractor"><main class="w"><h1>YouTube Tag Extractor</h1><p>Paste a YouTube video link to see its hidden tags and hashtags, count the characters and copy them in one click.</p><div class="ad"></div><div class="box" id="app"><label for="u">YouTube video link or ID</label><input id="u" type="text" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" inputmode="url"><button id="go" type="button">Extract tags</button><p id="msg" class="muted" aria-live="polite"></p><div id="res" hidden><h3 id="vt" style="margin:8px 0 2px"></h3><p class="muted" id="vm"></p><div class="stats" id="st"></div><h3>Tags</h3><div id="tags" class="chips"></div><p class="row"><button id="c1" type="button">Copy tags (comma separated)</button><button id="c2" type="button" class="alt">Copy as hashtags</button></p><div id="hbox" hidden><h3>Hashtags in the title and description</h3><div id="hts" class="chips"></div></div></div></div><div class="ad"></div><article><p>The YouTube Tag Extractor reads the tags that a creator added to a video and shows them as a list you can copy. It also lists the hashtags used in the title and description, and counts how many characters the tags use.</p><h2>How to use the YouTube Tag Extractor</h2><p>Paste the link of a public video and press Extract tags. The title, channel, upload date and view count appear first, followed by the tags. Use Copy tags to get them as a comma separated list, ready for the tags field in YouTube Studio.</p><h2>Why use it</h2><p>Tags are not shown on the YouTube page, so they are hard to see without a tool. Reading the tags of videos in your topic gives you ideas for keywords, common spellings and related phrases that you may have missed.</p></article><script>
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function videoId(s){
+  s=(s||'').trim();
+  if(/^[A-Za-z0-9_-]{11}$/.test(s))return s;
+  let u;
+  try{u=new URL(/^https?:\/\//i.test(s)?s:'https://'+s)}catch(e){return null}
+  const h=u.hostname.replace(/^(www|m|music)\./,'');
+  let id=null;
+  if(h==='youtu.be')id=u.pathname.split('/')[1];
+  else if(h==='youtube.com'||h==='youtube-nocookie.com'){
+    if(u.pathname==='/watch')id=u.searchParams.get('v');
+    else{const m=/^\/(shorts|embed|live|v)\/([^/?#]+)/.exec(u.pathname);if(m)id=m[2]}
+  }
+  return id&&/^[A-Za-z0-9_-]{11}$/.test(id)?id:null;
+}
+function copyBtn(btn,text){
+  const old=btn.textContent;
+  const done=()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent=old,1500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done,()=>fallback());
+  else fallback();
+  function fallback(){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){}t.remove()}
+}
+
+const nf=new Intl.NumberFormat();
+let busy=false;
+async function run(){
+  const id=videoId($('u').value),msg=$('msg'),res=$('res');
+  res.hidden=true;
+  if(!id){msg.textContent='Paste a YouTube video link such as https://www.youtube.com/watch?v=dQw4w9WgXcQ';return}
+  if(busy)return;busy=true;$('go').disabled=true;msg.textContent='Reading video details...';
+  try{
+    const r=await fetch('/api/yt-video?id='+encodeURIComponent(id));
+    const d=await r.json();
+    if(!r.ok){msg.textContent=d.error==='Video not found or private'?'That video was not found. It may be private, deleted or the link may be wrong.':(d.error||'Could not read this video right now. Try again later.');return}
+    msg.textContent='';
+    $('vt').textContent=d.title;
+    const date=d.publishedAt?new Date(d.publishedAt).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}):'';
+    $('vm').textContent=[d.channelTitle,date].filter(Boolean).join(' - ');
+    const total=d.tags.join(',').length;
+    $('st').innerHTML='<div><b>'+d.tags.length+'</b>Tags</div><div><b>'+total+'</b>of 500 characters</div>'+(d.viewCount!=null?'<div><b>'+nf.format(d.viewCount)+'</b>Views</div>':'');
+    const box=$('tags');box.innerHTML='';
+    if(!d.tags.length){box.innerHTML='<p class="muted">The creator did not add any tags to this video.</p>'}
+    d.tags.forEach(t=>{const s=document.createElement('span');s.className='chip';s.textContent=t;box.appendChild(s)});
+    $('c1').hidden=$('c2').hidden=!d.tags.length;
+    $('c1').onclick=()=>copyBtn($('c1'),d.tags.join(', '));
+    $('c2').onclick=()=>copyBtn($('c2'),d.tags.map(t=>'#'+t.replace(/[^\p{L}\p{N}_]+/gu,'')).filter(t=>t.length>1).join(' '));
+    const hb=$('hts');hb.innerHTML='';$('hbox').hidden=!d.hashtags.length;
+    d.hashtags.forEach(t=>{const s=document.createElement('span');s.className='chip';s.textContent=t;hb.appendChild(s)});
+    res.hidden=false;
+  }catch(e){msg.textContent='Network error. Check your connection and try again.'}
+  finally{busy=false;$('go').disabled=false}
+}
+$('go').onclick=run;
+$('u').addEventListener('keydown',e=>{if(e.key==='Enter')run()});
+</script></main></body></html>

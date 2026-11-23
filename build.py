@@ -6,7 +6,8 @@ SRCTOOLS = SRC + '/tools-src'
 OUT = REPO + '/dist'
 sys.path.insert(0, SRC)
 from content_more import MORE
-TODAY = '2026-11-20'
+from content_yt import Y
+TODAY = '2026-11-23'
 BASE = 'https://viptools.online'
 
 shutil.rmtree(OUT, ignore_errors=True)
@@ -31,7 +32,9 @@ CATS = [
     ('Developer tools', 'Format, encode and decode the data developers handle every day.',
      ['json-formatter', 'base64-encoder-decoder', 'url-encoder-decoder', 'timestamp-converter', 'color-converter']),
     ('Calculators and converters', 'Health, age, date, percentage and time calculations.',
-     ['bmi-calculator', 'age-calculator', 'date-difference-calculator', 'percentage-calculator', 'length-converter', 'youtube-playlist-length-calculator']),
+     ['bmi-calculator', 'age-calculator', 'date-difference-calculator', 'percentage-calculator', 'length-converter']),
+    ('YouTube tools', 'Thumbnails, tags, channel IDs, timestamps and playlist length for creators and viewers.',
+     ['youtube-thumbnail-downloader', 'youtube-tag-extractor', 'youtube-channel-id-finder', 'youtube-timestamp-link-generator', 'youtube-playlist-length-calculator']),
     ('Finance calculators', 'Estimate loans, savings growth and discounts.',
      ['emi-calculator', 'compound-interest-calculator', 'discount-calculator']),
     ('Media tools', 'Work with images in your browser.',
@@ -248,6 +251,9 @@ tool('image-compressor', 'Image Compressor', 'Image Compressor: Reduce JPG & PNG
   ('Why is the output always JPG?', 'JPG compresses photos much more than PNG. The tool outputs JPG, so PNG transparency is replaced with white.'),
   ('Does compression help SEO?', 'Smaller images load faster, which helps page speed. Google treats page experience as one of many signals, so compressing images is good practice rather than a guaranteed ranking boost.')])
 
+for _slug, _d in Y.items():
+    tool(_slug, _d['name'], _d['title'], _d['desc'], _d['extra'], _d['faq'])
+
 # ----------------------------------------------------------------- templates
 OV = cfg.get('toolOverrides', {})
 for _s in T:
@@ -292,9 +298,9 @@ def head_common(title, desc, canon, robots='index,follow', og_type='website', ex
         '<meta name="theme-color" content="#6366f1">'
         '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
         '<script>try{var t=localStorage.getItem("vt-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>'
-        '<link rel="stylesheet" href="/style.css?v=6">'
+        '<link rel="stylesheet" href="/style.css?v=7">'
         + verif + adsense + gtag + extra_head +
-        '<script src="/site.js?v=6" defer></script></head>')
+        '<script src="/site.js?v=7" defer></script></head>')
 
 def header():
     links = ''.join('<a href="/tools/%s/">%s</a>' % (s, T[s]['name']) for c in CATS for s in c[2])
@@ -468,6 +474,8 @@ PRIVACY = '''<h1>Privacy Policy</h1>
 <p>VipTools.online ("we", "our", "us") respects your privacy. This policy explains what information we collect, how it is used and the choices you have.</p>
 <h2>Text and files you process</h2>
 <p>Our tools run in your browser. The text, numbers and images you enter are processed on your device and are not stored or sent to our servers by the tool itself. Some tools save your last inputs in your browser's local storage so they are there when you return. That data stays on your device, and you can clear it through your browser settings.</p>
+<h2>YouTube lookup tools</h2>
+<p>The YouTube Tag Extractor, Channel ID Finder and Playlist Length Calculator send the link, video ID, channel name or playlist ID you enter to our server. The server asks the YouTube Data API for the public details and returns them to you. We do not store these requests, and results may be cached for a short time to keep lookups fast. The Thumbnail Downloader loads images directly from YouTube, and the Download button sends the video ID to our server only to deliver the image file. Your use of YouTube is also subject to the <a href="https://www.youtube.com/t/terms" rel="noopener">YouTube Terms of Service</a> and <a href="https://policies.google.com/privacy" rel="noopener">Google Privacy Policy</a>.</p>
 <h2>Analytics</h2>
 <p>We use Google Analytics to understand how visitors use the site, such as which pages are popular and how people arrive. Analytics uses cookies and collects usage data such as pages viewed, approximate location and device type. Where consent is required, analytics cookies are set only after you accept them in our cookie banner.</p>
 <h2>Search Console</h2>
