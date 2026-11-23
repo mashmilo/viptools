@@ -7,6 +7,7 @@ OUT = REPO + '/dist'
 sys.path.insert(0, SRC)
 from content_more import MORE
 from content_yt import Y
+from content_img import I
 TODAY = '2026-11-23'
 BASE = 'https://viptools.online'
 
@@ -38,7 +39,7 @@ CATS = [
     ('Finance calculators', 'Estimate loans, savings growth and discounts.',
      ['emi-calculator', 'compound-interest-calculator', 'discount-calculator']),
     ('Media tools', 'Work with images in your browser.',
-     ['image-compressor']),
+     ['image-compressor', 'image-resizer', 'image-format-converter', 'image-to-base64', 'image-rotator']),
 ]
 CAT_OF = {s: c[0] for c in CATS for s in c[2]}
 
@@ -252,6 +253,8 @@ tool('image-compressor', 'Image Compressor', 'Image Compressor: Reduce JPG & PNG
   ('Does compression help SEO?', 'Smaller images load faster, which helps page speed. Google treats page experience as one of many signals, so compressing images is good practice rather than a guaranteed ranking boost.')])
 
 for _slug, _d in Y.items():
+    tool(_slug, _d['name'], _d['title'], _d['desc'], _d['extra'], _d['faq'])
+for _slug, _d in I.items():
     tool(_slug, _d['name'], _d['title'], _d['desc'], _d['extra'], _d['faq'])
 
 # ----------------------------------------------------------------- templates

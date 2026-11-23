@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Image Format Converter - JPG, PNG, WebP | VipTools</title><meta name="description" content="Convert images between JPG, PNG and WebP in your browser. Free, fast and private. Nothing is uploaded to a server."><link rel="canonical" href="https://viptools.online/tools/image-format-converter/"><meta property="og:title" content="Image Format Converter - JPG, PNG, WebP | VipTools"><meta property="og:description" content="Convert images between JPG, PNG and WebP in your browser. Nothing is uploaded."><meta property="og:url" content="https://viptools.online/tools/image-format-converter/"><meta property="og:type" content="website"><meta name="theme-color" content="#6366f1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css"><script src="/site.js" defer></script></head><body data-tool="image-format-converter"><main class="w"><h1>Image Format Converter</h1><p>Convert images between JPG, PNG and WebP in your browser. Your files are never uploaded.</p><div class="ad"></div><div class="box" id="app"><label for="f">Choose an image</label><input id="f" type="file" accept="image/*"><label for="fmt">Convert to</label><select id="fmt"><option value="image/png">PNG (keeps transparency)</option><option value="image/jpeg">JPG (smallest for photos)</option><option value="image/webp">WebP (smallest overall)</option></select><label for="q">Quality (JPG and WebP)</label><input id="q" type="range" min="10" max="100" value="90"><p id="info" class="muted" aria-live="polite">Select an image to start.</p><a id="dl" class="btn" hidden>Download converted image</a></div><div class="ad"></div><article><p>The Image Format Converter changes a picture from one file type to another, such as PNG to JPG or JPG to WebP. The conversion happens entirely in your browser, so private photos stay on your device.</p><h2>How to convert an image</h2><p>Choose a file, pick the output format and adjust quality if you chose JPG or WebP. The converted size appears above the download button. Download the new file and upload it wherever you need it.</p><h2>Which format should you choose</h2><p>Use JPG for photos when file size matters, because it compresses photographs well. Use PNG for logos, screenshots and graphics that need sharp edges or transparent backgrounds. Use WebP for websites, because it is usually smaller than both JPG and PNG at similar quality and every modern browser opens it.</p><h2>Transparency and white backgrounds</h2><p>JPG does not support transparency. When you convert a transparent PNG to JPG, the tool fills the transparent areas with white so the image looks correct. PNG and WebP keep transparency.</p><h2>Frequently asked questions</h2><p>Is quality lost? JPG and WebP are lossy, so a lower quality setting makes smaller files with some detail loss. PNG is lossless. Can I convert HEIC photos? Browsers only open formats they support, so export HEIC photos to JPG on your phone first.</p></article><script>
+const $=id=>document.getElementById(id);
+let img=null,name='image',url=null;
+function toggleQ(){$('q').disabled=$('fmt').value==='image/png'}
+$('f').addEventListener('change',()=>{const f=$('f').files[0];if(!f)return;name=f.name.replace(/\.[^.]+$/,'')||'image';const i=new Image();i.onload=()=>{img=i;URL.revokeObjectURL(i.src);convert()};i.onerror=()=>{img=null;$('info').textContent='This file type cannot be opened by your browser. Try JPG, PNG or WebP.'};i.src=URL.createObjectURL(f)});
+$('fmt').addEventListener('change',()=>{toggleQ();convert()});
+$('q').addEventListener('input',convert);
+toggleQ();
+function convert(){
+ if(!img)return;
+ const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const x=c.getContext('2d');
+ const type=$('fmt').value;
+ if(type==='image/jpeg'){x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height)}
+ x.drawImage(img,0,0);
+ const ext=type==='image/png'?'png':type==='image/webp'?'webp':'jpg';
+ c.toBlob(b=>{if(!b){$('info').textContent='Your browser could not create this format. Try PNG or JPG.';return}
+  if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(b);
+  const d=$('dl');d.href=url;d.download=name+'.'+ext;d.hidden=false;d.textContent='Download '+ext.toUpperCase();
+  $('info').textContent='Size: '+img.naturalWidth+' x '+img.naturalHeight+' px, new file '+(b.size/1024).toFixed(0)+' KB.';
+ },type,(+$('q').value||90)/100);
+}
+</script></main></body></html>

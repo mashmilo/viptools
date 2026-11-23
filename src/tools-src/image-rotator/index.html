@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Image Rotator - Rotate & Flip Images Online | VipTools</title><meta name="description" content="Rotate images 90 degrees left or right, or flip them horizontally or vertically, then download. Free and private, runs in your browser."><link rel="canonical" href="https://viptools.online/tools/image-rotator/"><meta property="og:title" content="Image Rotator - Rotate & Flip Images Online | VipTools"><meta property="og:description" content="Rotate or flip images in your browser. Nothing is uploaded."><meta property="og:url" content="https://viptools.online/tools/image-rotator/"><meta property="og:type" content="website"><meta name="theme-color" content="#6366f1"><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css"><script src="/site.js" defer></script></head><body data-tool="image-rotator"><main class="w"><h1>Image Rotator</h1><p>Rotate an image 90 degrees or flip it, then download the result. Your photo never leaves your device.</p><div class="ad"></div><div class="box" id="app"><label for="f">Choose an image</label><input id="f" type="file" accept="image/*"><div class="thumb-btn"><button type="button" id="rl" class="btn alt">Rotate left</button><button type="button" id="rr" class="btn alt">Rotate right</button><button type="button" id="fh" class="btn alt">Flip horizontal</button><button type="button" id="fv" class="btn alt">Flip vertical</button><button type="button" id="rs" class="btn alt">Reset</button></div><canvas id="cv" style="max-width:100%;margin-top:12px;border-radius:8px;display:none"></canvas><p id="info" class="muted" aria-live="polite">Select an image to start.</p><a id="dl" class="btn" download="rotated.jpg" hidden>Download image</a></div><div class="ad"></div><article><p>The Image Rotator turns a photo sideways or upside down and mirrors it left to right or top to bottom. It is handy for photos taken in the wrong orientation, scanned documents and mirrored selfies.</p><h2>How to rotate or flip an image</h2><p>Choose an image and use the buttons. Each rotate button turns the picture by 90 degrees. Flip horizontal mirrors it left to right, and flip vertical mirrors it top to bottom. The preview updates after each click, and Reset returns the image to its original state. When it looks right, press Download.</p><h2>Why rotate a photo</h2><p>Phone cameras sometimes save a picture sideways because of how the device was held, and some screenshots or scans come out rotated. Rotating fixes the orientation without re-editing the whole picture. Flipping is useful for mirrored selfies, which look wrong when posted, or for reversing a design or logo.</p><h2>Choosing a download format</h2><p>The tool exports JPG for photos and PNG if your image has transparency. Rotating a JPG and saving it again causes very slight quality loss each time, so rotate once and save the final result.</p><h2>Frequently asked questions</h2><p>Does rotating change the image size? No, the number of pixels stays the same. Rotating by 90 degrees swaps the width and height. Can I rotate a PNG with transparency? Yes. The tool keeps transparent areas in PNG files.</p></article><script>
+const $=id=>document.getElementById(id);
+let img=null,name='image',rot=0,fh=false,fv=false,url=null;
+$('f').addEventListener('change',()=>{const f=$('f').files[0];if(!f)return;name=f.name.replace(/\.[^.]+$/,'')||'image';const i=new Image();i.onload=()=>{img=i;URL.revokeObjectURL(i.src);rot=0;fh=false;fv=false;draw()};i.onerror=()=>{$('info').textContent='This file cannot be opened. Try JPG, PNG or WebP.'};i.src=URL.createObjectURL(f)});
+$('rl').onclick=()=>{rot=(rot+270)%360;draw()};
+$('rr').onclick=()=>{rot=(rot+90)%360;draw()};
+$('fh').onclick=()=>{fh=!fh;draw()};
+$('fv').onclick=()=>{fv=!fv;draw()};
+$('rs').onclick=()=>{rot=0;fh=false;fv=false;draw()};
+function draw(){
+ if(!img)return;
+ const sw=img.naturalWidth,sh=img.naturalHeight;
+ const swap=rot===90||rot===270;
+ const cv=$('cv');cv.width=swap?sh:sw;cv.height=swap?sw:sh;cv.style.display='block';
+ const x=cv.getContext('2d');
+ x.save();
+ x.translate(cv.width/2,cv.height/2);
+ x.rotate(rot*Math.PI/180);
+ x.scale(fh?-1:1,fv?-1:1);
+ x.drawImage(img,-sw/2,-sh/2);
+ x.restore();
+ cv.toBlob(b=>{if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(b);const d=$('dl');d.href=url;d.download=name+'-rotated.jpg';d.hidden=false;
+  $('info').textContent='Rotation '+rot+' degrees'+(fh?', flipped horizontally':'')+(fv?', flipped vertically':'')+'. Size '+cv.width+' x '+cv.height+' px.';
+ },'image/jpeg',0.92);
+}
+</script></main></body></html>
