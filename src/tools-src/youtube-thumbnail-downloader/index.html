@@ -35,7 +35,7 @@ function show(){
   let pending=Q.length,found=0;
   Q.forEach(([q,label,dim])=>{
     const card=document.createElement('div');card.className='thumb';
-    const img=new Image();img.alt=label+' thumbnail of YouTube video '+id;img.loading='lazy';
+    const img=new Image();img.alt=label+' thumbnail of YouTube video '+id;
     img.onload=()=>{
       if(q!=='default'&&img.naturalWidth<=120){card.remove()}
       else{found++;

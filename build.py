@@ -298,9 +298,9 @@ def head_common(title, desc, canon, robots='index,follow', og_type='website', ex
         '<meta name="theme-color" content="#6366f1">'
         '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
         '<script>try{var t=localStorage.getItem("vt-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>'
-        '<link rel="stylesheet" href="/style.css?v=7">'
+        '<link rel="stylesheet" href="/style.css?v=8">'
         + verif + adsense + gtag + extra_head +
-        '<script src="/site.js?v=7" defer></script></head>')
+        '<script src="/site.js?v=8" defer></script></head>')
 
 def header():
     links = ''.join('<a href="/tools/%s/">%s</a>' % (s, T[s]['name']) for c in CATS for s in c[2])

@@ -138,3 +138,10 @@ pre,code{white-space:pre-wrap;word-break:break-word}
 .copyrow button{flex-shrink:0;margin-bottom:10px}
 .row label{flex:1;min-width:90px}
 button[hidden],a[hidden],div[hidden]{display:none!important}
+
+/* Footer tool lists: one link per line with spacing */
+.fcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px 28px;width:100%;padding-top:6px}
+.fcols>div{min-width:0}
+.fcols .fh{font-size:15px;margin:0 0 6px}
+.fcols a{display:block;color:var(--muted);font-size:14px;line-height:1.5;padding:4px 0}
+.fcols a:hover{color:var(--primary)}
