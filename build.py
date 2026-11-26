@@ -305,37 +305,30 @@ def head_common(title, desc, canon, robots='index,follow', og_type='website', ex
         '<meta name="twitter:card" content="summary">'
         '<meta name="theme-color" content="#6366f1">'
         '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
-        '<script>try{var t=localStorage.getItem("vt-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>'
+        '<script>try{var t=localStorage.getItem("vt-theme")||\"dark\";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>'
         '<link rel="stylesheet" href="/style.css?v=8">'
         + verif + adsense + gtag + extra_head +
         '<script src="/site.js?v=8" defer></script></head>')
 
 def header():
-    links = ''.join('<a href="/tools/%s/">%s</a>' % (s, T[s]['name']) for c in CATS for s in c[2])
     return ('<header class="site-header"><div class="w nav">'
         '<a class="brand" href="/">' + LOGO + '<div>Vip<span>Tools</span></div></a>'
-        '<nav class="menu" aria-label="Main">'
-        '<a class="hide-m" href="/">Home</a>'
-        '<div class="dd" id="ddTools"><button type="button" aria-expanded="false">Tools &#9662;</button>'
-        '<div class="dd-panel" id="ddPanel">' + links + '<a href="/" style="grid-column:1/-1;text-align:center;color:var(--primary);font-weight:600">View all tools &rarr;</a></div></div>'
-        '<a class="hide-m" href="/about.html">About</a>'
-        '<a class="hide-m" href="/contact.html">Contact</a>'
-        '<a class="hide-m" href="/privacy.html">Privacy</a>'
-        '<button class="theme-btn" type="button" aria-label="Toggle theme"></button>'
-        '<button class="theme-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false">' + ICON_MENU + '</button>'
-        '</nav></div>'
-        '<div class="mobile-menu" id="mm"><a href="/">Home</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy</a>'
-        '<div style="padding:12px 4px 4px;font-weight:600;color:var(--muted);font-size:13px">ALL TOOLS</div><div class="sub">' + links + '</div></div>'
+        '<nav class="menu" aria-label="Main"><a href="/#tools">Tools</a><a href="/about.html">About</a><a href="/contact.html">Contact</a></nav>'
+        '<div class="hbtns"><button class="icon-btn" id="tb" type="button" aria-label="Switch to light mode"></button>'
+        '<button class="icon-btn menu-btn" id="mb" type="button" aria-label="Open menu" aria-expanded="false">' + ICON_MENU + '</button></div>'
+        '</div><div class="mobile-menu" id="mm"><a href="/#tools">All tools</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms</a></div>'
         '</header>')
 
+POPULAR = ['word-counter', 'password-generator', 'json-formatter', 'emi-calculator', 'image-compressor', 'ai-video-clipper']
+
 def footer():
-    cols = ''.join('<div><h3 class="fh">%s</h3>%s</div>' % (c[0], ''.join('<a href="/tools/%s/">%s</a>' % (s, T[s]['name']) for s in c[2])) for c in CATS)
+    pop = ''.join('<a href="/tools/%s/">%s</a>' % (s_, T[s_]['name']) for s_ in POPULAR if s_ in T)
     return ('<footer class="site-footer"><div class="w foot">'
-        '<div><a class="brand" href="/" style="font-size:17px">' + LOGO.replace('width="32" height="32"', 'width="26" height="26"') + '<div>Vip<span>Tools</span></div></a>'
-        '<p style="margin-top:8px">Free, fast and private online tools. Everything runs in your browser.</p></div>'
-        '<nav><a href="/">Home</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms</a></nav>'
-        '<div class="fcols">' + cols + '</div>'
-        '<p>&copy; 2026 VipTools.online</p></div></footer>')
+        '<div><a class="brand" href="/">' + LOGO.replace('width="32" height="32"', 'width="26" height="26"') + '<div>Vip<span>Tools</span></div></a>'
+        '<p>Free, fast and private online tools. Everything runs in your browser.</p></div>'
+        '<div><h3 class="fh">Site</h3><nav class="flinks"><a href="/">Home</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></nav></div>'
+        '<div><h3 class="fh">Popular tools</h3><nav class="flinks">' + pop + '<a href="/#tools">All tools</a></nav></div>'
+        '</div><div class="w copy">&copy; 2026 VipTools.online</div></footer>')
 
 def ldjson(obj):
     return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False) + '</script>'
@@ -424,7 +417,7 @@ for name, blurb, slugs in CATS:
             (html.escape((T[s]['name'] + ' ' + T[s]['desc']).lower(), quote=True), s, html.escape(T[s]['name']), html.escape(T[s]['desc'].split('.')[0] + '.')))
     cards += '</div></section>'
 
-home_body = ('<section class="hero"><h1>VipTools: free online tools that just work</h1>'
+home_body = ('<section class="hero"><h1>Free online tools that just work</h1>'
     '<p>VipTools (also written Vip Tools) is a collection of free tools for text, calculations, developers and images. Each tool runs in your browser, so the data you enter is processed on your device and is not uploaded to our servers.</p>'
     '<div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>'
     '<input id="search" type="search" placeholder="Search tools (e.g. password, json, emi)" aria-label="Search tools"></div></section>'
