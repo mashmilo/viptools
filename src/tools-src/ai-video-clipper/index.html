@@ -1,0 +1,140 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>AI Video Clipper | VipTools</title></head><body><main class="w"><div class="box" id="app">
+<label for="f">Choose a video (MP4 or WebM works best)</label>
+<input id="f" type="file" accept="video/*">
+<video id="v" controls playsinline style="width:100%;max-height:360px;margin-top:12px;border-radius:8px;background:#000;display:none"></video>
+<div class="thumb-btn"><button type="button" id="find" class="btn alt">AI find highlights</button><select id="len" aria-label="Suggested clip length"><option value="15">15 s clips</option><option value="30" selected>30 s clips</option><option value="60">60 s clips</option></select></div>
+<ul id="hl" class="muted"></ul>
+<div class="thumb-btn"><label>Start (seconds) <input id="s" type="number" min="0" step="0.1" value="0"></label><button type="button" id="ss" class="btn alt">Start = current time</button></div>
+<div class="thumb-btn"><label>End (seconds) <input id="e" type="number" min="0" step="0.1" value="30"></label><button type="button" id="se" class="btn alt">End = current time</button></div>
+<label>Output shape <select id="fmt"><option value="orig">Original shape</option><option value="916">Vertical 9:16 (Shorts, Reels, TikTok)</option></select></label>
+<p><button type="button" id="export" class="btn">Export clip</button></p>
+<p id="msg" aria-live="polite" class="muted"></p>
+<a id="dl" class="btn" hidden>Download clip</a>
+</div><div class="ad"></div><article>
+<p>The AI Video Clipper helps you cut a short clip from a longer video. Its highlight finder looks at how loud the sound is and how much the picture changes, then suggests the most energetic moments. You can pick a suggestion or set your own start and end times, choose a normal or vertical 9:16 shape, and download the clip. Everything happens in your browser, so your video is never uploaded.</p>
+<h2>How the highlight finder works</h2>
+<p>The tool reads the audio of your video and measures the loudness every second, then samples frames across the video to see where the picture changes sharply, such as a new scene or a fast cut. It combines both measures into a score and suggests the highest-scoring clips without overlapping. The finder does not understand speech or meaning, so always check the suggestions and adjust the times to suit your content.</p>
+<h2>Making a vertical clip</h2>
+<p>Choose Vertical 9:16 to crop the centre of your video to the tall shape used by YouTube Shorts, Instagram Reels and TikTok. The crop keeps the middle of the frame, so move the subject toward the centre before you record if it sits at the edge.</p>
+<h2>Recording time and browsers</h2>
+<p>A clip is recorded in real time, so a 30 second clip takes about 30 seconds to export. Keep the tab open and in front while it records. The latest versions of Chrome, Edge and Firefox support recording, and Safari may save an MP4 file instead of WebM.</p>
+<h2>Frequently asked questions</h2>
+<h3>Is my video uploaded?</h3><p>No. The clipping and highlight analysis run in your browser, and the video stays on your device.</p>
+<h3>Why does the highlight finder not pick the right moment?</h3><p>It measures sound and picture changes, not what is said or shown. A quiet, important moment can score low, so use the start and end boxes to choose it yourself.</p>
+<h3>Which video files work?</h3><p>MP4 and WebM files work in most browsers. Some MOV and HEVC files may not open, depending on your browser and device.</p>
+<h3>Is there a size limit?</h3><p>There is no fixed limit, but the highlight finder works best on videos under 300 MB. Very long videos take longer to analyse on older phones.</p>
+</article><script>
+const $=id=>document.getElementById(id);
+const v=$('v');
+let url=null,name='clip',dur=0,dlUrl=null;
+const fmt=t=>{t=Math.max(0,Math.floor(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+const say=(m,ok)=>{const e=$('msg');e.className=ok?'ok':'bad';e.textContent=m};
+function seekTo(t){return new Promise(r=>{if(Math.abs(v.currentTime-t)<0.05)return r();let k=setTimeout(r,4000);v.addEventListener('seeked',()=>{clearTimeout(k);r()},{once:true});v.currentTime=t})}
+function norm(a){let m=0;for(let i=0;i<a.length;i++)if(a[i]>m)m=a[i];m=m||1;const o=new Float32Array(a.length);for(let i=0;i<a.length;i++)o[i]=a[i]/m;return o}
+
+$('f').onchange=()=>{
+  const f=$('f').files[0];if(!f)return;
+  if(url)URL.revokeObjectURL(url);
+  url=URL.createObjectURL(f);name=f.name.replace(/\.[^.]+$/,'')||'clip';
+  v.style.display='block';v.src=url;
+  v.onloadedmetadata=()=>{dur=v.duration;$('s').value=0;$('e').value=Math.min(30,dur).toFixed(1);$('hl').innerHTML='';say('Video loaded: '+fmt(dur)+' long.',true)};
+  v.onerror=()=>say('This video cannot be played. Try an MP4 or WebM file.',false);
+};
+
+$('ss').onclick=()=>{$('s').value=v.currentTime.toFixed(1)};
+$('se').onclick=()=>{$('e').value=v.currentTime.toFixed(1)};
+
+$('find').onclick=async()=>{
+  const f=$('f').files[0];
+  if(!f||!dur)return say('Choose a video first.',false);
+  if(f.size>300*1024*1024)return say('Highlight search works best on videos under 300 MB.',false);
+  const L=+$('len').value,btn=$('find');
+  btn.disabled=true;$('hl').innerHTML='';
+  try{
+    say('Listening to the audio...',true);
+    const secs=Math.floor(dur);
+    const loud=new Float32Array(secs);
+    try{
+      const ac=new (window.AudioContext||window.webkitAudioContext)();
+      const buf=await ac.decodeAudioData(await f.arrayBuffer());
+      const ch=buf.getChannelData(0),sr=buf.sampleRate;
+      for(let s=0;s<secs;s++){const a=s*sr,b=Math.min(ch.length,a+sr);let sum=0;for(let i=a;i<b;i++)sum+=ch[i]*ch[i];loud[s]=b>a?Math.sqrt(sum/(b-a)):0}
+      ac.close();
+    }catch(e){ /* no readable audio: rely on picture changes only */ }
+    say('Scanning the picture for scene changes...',true);
+    const cv=document.createElement('canvas');cv.width=48;cv.height=27;
+    const x=cv.getContext('2d',{willReadFrequently:true});
+    const vis=new Float32Array(secs);const step=Math.max(1,Math.floor(secs/200));
+    let prev=null;
+    for(let t=0;t<secs;t+=step){
+      await seekTo(t+0.5);
+      x.drawImage(v,0,0,48,27);
+      const d=x.getImageData(0,0,48,27).data;
+      if(prev){let diff=0;for(let i=0;i<d.length;i+=4)diff+=Math.abs(d[i]-prev[i])+Math.abs(d[i+1]-prev[i+1])+Math.abs(d[i+2]-prev[i+2]);
+        for(let k=t;k<Math.min(secs,t+step);k++)vis[k]=diff}
+      prev=d;
+    }
+    if(secs<L)return say('The video is shorter than the clip length you chose.',false);
+    const nl=norm(loud),nv=norm(vis),score=new Float32Array(secs);
+    for(let s=0;s<secs;s++)score[s]=0.6*nl[s]+0.4*nv[s];
+    const starts=[];
+    for(let s=0;s+L<=secs;s++){let sum=0;for(let k=s;k<s+L;k++)sum+=score[k];starts.push({s:s,sc:sum/L})}
+    starts.sort((a,b)=>b.sc-a.sc);
+    const picked=[];
+    for(const p of starts){if(picked.every(q=>Math.abs(q.s-p.s)>=L))picked.push(p);if(picked.length===5)break}
+    picked.forEach((p,i)=>{
+      const li=document.createElement('li'),b=document.createElement('button');
+      b.type='button';b.className='btn alt';
+      b.textContent='Clip '+(i+1)+': '+fmt(p.s)+' to '+fmt(p.s+L)+' (score '+Math.round(p.sc*100)+')';
+      b.onclick=()=>{$('s').value=p.s;$('e').value=p.s+L;say('Clip '+(i+1)+' selected. Press Export clip to save it.',true)};
+      li.appendChild(b);$('hl').appendChild(li);
+    });
+    say('Found '+picked.length+' suggested clips. Pick one to fill in the times.',true);
+  }catch(err){say('Highlight search failed: '+err.message,false)}
+  finally{btn.disabled=false;v.currentTime=0}
+};
+
+$('export').onclick=async()=>{
+  if(!url)return say('Choose a video first.',false);
+  const s=+$('s').value,e=Math.min(+$('e').value,dur);
+  if(!(e>s))return say('The end time must be after the start time.',false);
+  if(typeof MediaRecorder==='undefined'||!v.captureStream)return say('Your browser cannot record clips. Try the latest Chrome, Edge or Firefox.',false);
+  const btn=$('export');btn.disabled=true;$('dl').hidden=true;
+  let run=false;
+  try{
+    await seekTo(s);
+    let stream=v.captureStream();
+    if($('fmt').value==='916'){
+      const c=document.createElement('canvas');c.width=720;c.height=1280;const g=c.getContext('2d');
+      const R=9/16;run=true;
+      const paint=()=>{
+        if(!run)return;
+        const vw=v.videoWidth,vh=v.videoHeight;let sw=vw,sh=vh,sx=0,sy=0;
+        if(vw/vh>R){sw=vh*R;sx=(vw-sw)/2}else{sh=vw/R;sy=(vh-sh)/2}
+        g.fillStyle='#000';g.fillRect(0,0,720,1280);g.drawImage(v,sx,sy,sw,sh,0,0,720,1280);
+        requestAnimationFrame(paint);
+      };
+      stream=new MediaStream([...c.captureStream(30).getVideoTracks(),...stream.getAudioTracks()]);
+      paint();
+    }
+    const type=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+    const rec=new MediaRecorder(stream,type?{mimeType:type}:{});
+    const chunks=[];
+    rec.ondataavailable=ev=>{if(ev.data.size)chunks.push(ev.data)};
+    const stopped=new Promise(r=>rec.onstop=r);
+    rec.start(250);
+    v.muted=false;v.currentTime=s;await v.play();
+    say('Recording... keep this tab open.',true);
+    await new Promise(r=>{const t=setInterval(()=>{if(v.currentTime>=e||v.ended){clearInterval(t);r()}},30)});
+    v.pause();rec.stop();await stopped;run=false;
+    const mime=rec.mimeType||'video/webm';
+    const blob=new Blob(chunks,{type:mime});
+    if(dlUrl)URL.revokeObjectURL(dlUrl);
+    dlUrl=URL.createObjectURL(blob);
+    const dl=$('dl');dl.href=dlUrl;dl.download=name+'-clip-'+fmt(s).replace(':','m')+'.'+(mime.includes('mp4')?'mp4':'webm');
+    dl.textContent='Download clip ('+(blob.size/1048576).toFixed(1)+' MB)';dl.hidden=false;
+    say('Clip ready. Recorded '+Math.round(e-s)+' seconds.',true);
+  }catch(err){run=false;say('Export failed: '+err.message,false)}
+  finally{btn.disabled=false}
+};
+</script></main></body></html>

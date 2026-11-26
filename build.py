@@ -9,7 +9,8 @@ from content_more import MORE
 from content_yt import Y
 from content_img import I
 from content_new import N
-TODAY = '2026-11-23'
+import datetime
+TODAY = datetime.date.today().isoformat()
 BASE = 'https://viptools.online'
 
 shutil.rmtree(OUT, ignore_errors=True)
@@ -40,7 +41,7 @@ CATS = [
     ('Finance calculators', 'Estimate loans, savings growth and discounts.',
      ['emi-calculator', 'compound-interest-calculator', 'discount-calculator']),
     ('Media tools', 'Work with images in your browser.',
-     ['image-compressor', 'image-resizer', 'image-format-converter', 'image-to-base64', 'image-rotator', 'image-background-remover', 'meme-generator']),
+     ['image-compressor', 'image-resizer', 'image-format-converter', 'image-to-base64', 'image-rotator', 'image-background-remover', 'meme-generator', 'ai-video-clipper']),
 ]
 CAT_OF = {s: c[0] for c in CATS for s in c[2]}
 
@@ -295,6 +296,7 @@ def head_common(title, desc, canon, robots='index,follow', og_type='website', ex
         '<meta name="description" content="' + html.escape(desc, quote=True) + '">'
         '<meta name="robots" content="' + robots + ',max-image-preview:large">'
         '<link rel="canonical" href="' + canon + '">'
+        '<meta name="application-name" content="VipTools">'
         '<meta property="og:site_name" content="VipTools">'
         '<meta property="og:type" content="' + og_type + '">'
         '<meta property="og:title" content="' + html.escape(title, quote=True) + '">'
@@ -338,7 +340,7 @@ def footer():
 def ldjson(obj):
     return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False) + '</script>'
 
-ORG = {"@type": "Organization", "@id": BASE + "/#org", "name": "VipTools", "url": BASE + "/", "logo": BASE + "/favicon.svg"}
+ORG = {"@type": "Organization", "@id": BASE + "/#org", "name": "VipTools", "alternateName": ["Vip Tools", "VipTools.online"], "url": BASE + "/", "logo": BASE + "/favicon.svg"}
 
 def page(title, desc, path, body, schema=(), robots='index,follow', og_type='website', extra_head='', status_note=''):
     canon = BASE + path
@@ -422,8 +424,8 @@ for name, blurb, slugs in CATS:
             (html.escape((T[s]['name'] + ' ' + T[s]['desc']).lower(), quote=True), s, html.escape(T[s]['name']), html.escape(T[s]['desc'].split('.')[0] + '.')))
     cards += '</div></section>'
 
-home_body = ('<section class="hero"><h1>Free online tools that just work</h1>'
-    '<p>VipTools is a collection of %d free tools for text, calculations, developers and images. Each tool runs in your browser, so the data you enter is processed on your device and is not uploaded to our servers.</p>'
+home_body = ('<section class="hero"><h1>VipTools: free online tools that just work</h1>'
+    '<p>VipTools (also written Vip Tools) is a collection of free tools for text, calculations, developers and images. Each tool runs in your browser, so the data you enter is processed on your device and is not uploaded to our servers.</p>'
     '<div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>'
     '<input id="search" type="search" placeholder="Search tools (e.g. password, json, emi)" aria-label="Search tools"></div></section>'
     '<div class="ad" aria-label="Advertisement"></div>'
@@ -432,16 +434,16 @@ home_body = ('<section class="hero"><h1>Free online tools that just work</h1>'
     '<section class="intro"><h2>Why use VipTools?</h2>'
     '<p>Many everyday jobs take longer than they should: checking a word count for an essay, estimating a loan payment, formatting an API response or shrinking a photo before uploading it. VipTools puts simple, accurate versions of these tools in one place, with no sign-up and no software to install.</p>'
     '<p>Every calculator shows its formula or method, and the guides on each tool page explain what the results mean and where they have limits. Read our <a href="/about.html">About page</a> to learn how we build and check the tools, or <a href="/contact.html">contact us</a> with feedback.</p></section>'
-    ) % (len(ENABLED), len(ENABLED), cards)
+    ) % (len(ENABLED), cards)
 home_schema = [
-    {"@type": "WebSite", "@id": BASE + "/#website", "url": BASE + "/", "name": "VipTools", "publisher": {"@id": BASE + "/#org"}, "inLanguage": "en"},
+    {"@type": "WebSite", "@id": BASE + "/#website", "url": BASE + "/", "name": "VipTools", "alternateName": ["Vip Tools", "VipTools.online"], "publisher": {"@id": BASE + "/#org"}, "inLanguage": "en"},
     {"@type": "ItemList", "name": "VipTools free online tools", "numberOfItems": len(ENABLED),
      "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": T[s]['name'], "url": BASE + "/tools/%s/" % s}
                          for i, s in enumerate([x for c in CATS for x in c[2]])]},
 ]
 open(OUT + '/index.html', 'w', encoding='utf-8').write(page(
-    'VipTools: %d Free Online Tools for Text, Calculators & Developers' % len(ENABLED),
-    'Free online tools: word counter, password generator, JSON formatter, EMI and BMI calculators and more. Private, no sign-up, runs in your browser.',
+    'VipTools: Free Online Tools for Text, Calculators, Developers & Images',
+    'VipTools offers free, private online tools for text, calculators, developers, creators and images. No sign-up, and everything runs in your browser.',
     '/', home_body, schema=home_schema))
 
 # ------------------------------------------------------------- static pages
@@ -451,7 +453,7 @@ def simple(title, desc, path, article):
     return page(title, desc, path, body, schema=[crumb_ld([("Home", "/"), (title.split(' | ')[0], path)])])
 
 ABOUT = '''<h1>About VipTools</h1>
-<p>VipTools is a free collection of everyday online tools for text, calculations, developers and images. It was built to be fast, simple and private: most tools run entirely in your browser, and there is no sign-up.</p>
+<p>VipTools (also written Vip Tools) is a free collection of everyday online tools for text, calculations, developers and images. It was built to be fast, simple and private: most tools run entirely in your browser, and there is no sign-up.</p>
 <h2>Who runs VipTools</h2>
 <p>VipTools is operated by {OWNER}. The site is an independent project. You can reach the operator at <a href="mailto:contact@viptools.online">contact@viptools.online</a>.</p>
 <h2>Our mission</h2>

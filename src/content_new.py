@@ -103,3 +103,16 @@ faq=[
 ),
 
 }
+
+N["ai-video-clipper"] = dict(
+name="AI Video Clipper",
+title="AI Video Clipper: Find Highlights & Make Shorts Free | VipTools",
+desc="Free AI video clipper that suggests highlights from sound and picture changes, then exports a clip or a 9:16 vertical video. Runs in your browser.",
+extra=[],
+faq=[
+ ("Is my video uploaded?", "No. The clipping and highlight analysis run in your browser, and the video stays on your device."),
+ ("Why does the highlight finder miss the right moment?", "It measures sound and picture changes, not what is said or shown. Use the start and end boxes to choose the moment yourself."),
+ ("Which video files work?", "MP4 and WebM files work in most browsers. Some MOV and HEVC files may not open, depending on your browser and device."),
+ ("Does recording take as long as the clip?", "Yes. Clips are recorded in real time, so keep the tab open and in front until the download is ready."),
+],
+)
