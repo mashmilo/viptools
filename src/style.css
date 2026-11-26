@@ -118,10 +118,12 @@ button.alt:hover,.btn.alt:hover{background:var(--border)}
 pre,code{white-space:pre-wrap;word-break:break-word;font-size:14px}
 table{max-width:100%;display:block;overflow-x:auto}
 
-/* Ads: collapse empty slots, keep them separate from tool controls */
-.ad{margin:0}
-.ad:not(:empty){margin:18px 0;min-height:100px;text-align:center;overflow:hidden}
-.ad ins{display:block}
+/* Ads: collapse empty slots, keep them separate from tool controls.
+   Use theme colours so an unfilled slot never shows a white box in dark mode. */
+.ad{margin:0;background:transparent}
+.ad:not(:empty){margin:18px 0;min-height:100px;text-align:center;overflow:hidden;background:var(--bg)}
+.ad ins{display:block;background:transparent}
+:root:not([data-theme=light]) .ad iframe{color-scheme:dark}
 
 /* Cookie notice */
 .cc{position:fixed;left:12px;right:12px;bottom:12px;max-width:520px;margin:0 auto;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 10px 30px rgba(0,0,0,.4);padding:14px;z-index:100;font-size:14px}
