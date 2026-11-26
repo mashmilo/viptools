@@ -1,0 +1,83 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Meme Generator | VipTools</title></head><body><main class="w"><div class="box" id="app">
+<label>Choose an image <input type="file" id="file" accept="image/*"></label>
+<label>Top text <input id="top" maxlength="120" placeholder="Top text" autocomplete="off"></label>
+<label>Bottom text <input id="bot" maxlength="120" placeholder="Bottom text" autocomplete="off"></label>
+<label>Text size <input id="size" type="range" min="30" max="120" value="70"></label>
+<canvas id="cv" style="max-width:100%;height:auto;display:block;border-radius:8px" aria-label="Meme preview"></canvas>
+<p><button type="button" id="dl">Download meme</button></p>
+</div><div class="ad"></div><article>
+<p>Make a meme from your own picture in seconds. Add top and bottom captions in the classic bold style, then download the result as a PNG. The image stays in your browser.</p>
+<h2>How to use Meme Generator</h2>
+<p>Choose a picture, type your top and bottom text, and adjust the text size until it fits. The preview updates as you type. Download the finished meme when it looks right.</p>
+<h2>Why use Meme Generator</h2>
+<p>Good memes are short and easy to read at a glance. Keeping each caption to a few words and using a high-contrast picture makes the joke land on a small phone screen.</p>
+</article>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const cv=$('cv'), ctx=cv.getContext('2d');
+let img=null;
+const MAXW=1200;
+
+function draw(){
+  let w=600,h=400;
+  if(img){ const s=Math.min(1,MAXW/img.width); w=Math.round(img.width*s); h=Math.round(img.height*s); }
+  cv.width=w; cv.height=h;
+  ctx.fillStyle='#e5e7eb'; ctx.fillRect(0,0,w,h);
+  if(img) ctx.drawImage(img,0,0,w,h);
+  else { ctx.fillStyle='#374151'; ctx.font='bold '+Math.round(w/22)+'px Arial, sans-serif'; ctx.textAlign='center'; ctx.fillText('Choose an image to start',w/2,h/2); }
+  if(img){
+    const fs=Math.round(+$('size').value*w/800);
+    ctx.font='bold '+fs+'px Impact, "Arial Black", Arial, sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.lineJoin='round'; ctx.lineWidth=Math.max(2,Math.round(fs/7));
+    ctx.strokeStyle='#000'; ctx.fillStyle='#fff';
+    const pad=Math.round(w*0.03), maxW=w-pad*2;
+    drawBlock(($('top').value||'').toUpperCase(),pad,fs,maxW,false,w,h);
+    drawBlock(($('bot').value||'').toUpperCase(),pad,fs,maxW,true,w,h);
+  }
+}
+
+function wrap(text,maxW){
+  const words=text.split(/\s+/).filter(Boolean), lines=[];
+  let line='';
+  for(const w of words){
+    const test=line?line+' '+w:w;
+    if(ctx.measureText(test).width<=maxW||!line) line=test; else { lines.push(line); line=w; }
+  }
+  if(line) lines.push(line);
+  return lines;
+}
+
+function drawBlock(text,pad,fs,maxW,bottom,w,h){
+  if(!text) return;
+  const lines=wrap(text,maxW), lh=fs*1.05;
+  let y=bottom? h-pad-lh*lines.length : pad;
+  lines.forEach((l,i)=>{
+    const yy=y+i*lh;
+    ctx.strokeText(l,w/2,yy);
+    ctx.fillText(l,w/2,yy);
+  });
+}
+
+$('file').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const im=new Image();
+  im.onload=()=>{ img=im; draw(); URL.revokeObjectURL(im.src); };
+  im.onerror=()=>{ $('top').placeholder='That file could not be read as an image.'; };
+  im.src=URL.createObjectURL(f);
+};
+['top','bot','size'].forEach(id=>$(id).addEventListener('input',draw));
+
+$('dl').onclick=()=>{
+  if(!img){ return; }
+  cv.toBlob(b=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b); a.download='meme.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  },'image/png');
+};
+draw();
+})();
+</script></main></body></html>

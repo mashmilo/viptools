@@ -1,0 +1,103 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>GitHub Uploader | VipTools</title></head><body><main class="w"><div class="box" id="app">
+<p class="muted">Your token is only used in this page to call api.github.com. It is never saved or sent anywhere else.</p>
+<label>GitHub token (fine-grained, Contents: read and write) <input id="tok" type="password" autocomplete="off" placeholder="github_pat_..."></label>
+<label>Repository owner <input id="owner" autocomplete="off" placeholder="your-username"></label>
+<label>Repository name <input id="repo" autocomplete="off" placeholder="my-repo"></label>
+<label>Branch <input id="branch" value="main" autocomplete="off"></label>
+<label>Folder inside the repo (optional) <input id="folder" autocomplete="off" placeholder="uploads/2026"></label>
+<label>Commit message <input id="commitMsg" autocomplete="off" placeholder="Upload files"></label>
+<label>Files <input type="file" id="files" multiple></label>
+<ul id="list" class="muted"></ul>
+<p><button type="button" id="go" disabled>Upload to GitHub</button></p>
+<p id="msg" aria-live="polite"></p>
+<ul id="links"></ul>
+</div><div class="ad"></div><article>
+<p>Upload one or many files straight to a GitHub repository from your browser. All files go in a single commit, so your history stays clean. Nothing is installed and no account is created with us.</p>
+<h2>How to use GitHub Uploader</h2>
+<p>Create a fine-grained personal access token on GitHub with Contents set to read and write for the repository you want. Enter the owner, repository and branch, choose your files, and press Upload. The page shows a link to each file when the commit is complete.</p>
+<h2>Why one commit</h2>
+<p>Uploading several files as one commit keeps your history readable. Each upload appears once, with one message, rather than a long list of separate commits.</p>
+</article>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const API='https://api.github.com';
+const MAX=25*1024*1024;
+let files=[];
+
+function enc(s){ return s.split('/').map(encodeURIComponent).join('/'); }
+function b64(buf){
+  const u=new Uint8Array(buf); let s=''; const CH=0x8000;
+  for(let i=0;i<u.length;i+=CH) s+=String.fromCharCode.apply(null,u.subarray(i,i+CH));
+  return btoa(s);
+}
+async function gh(tok,method,path,body){
+  const headers={Authorization:'Bearer '+tok,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
+  if(body) headers['Content-Type']='application/json';
+  const r=await fetch(API+path,{method,headers,body:body?JSON.stringify(body):undefined});
+  const text=await r.text(); let data=null;
+  try{ data=text?JSON.parse(text):null; }catch(e){}
+  if(!r.ok){ const err=new Error((data&&data.message)||('HTTP '+r.status)); err.status=r.status; throw err; }
+  return data;
+}
+function friendly(e){
+  if(e.status===401) return 'The token is invalid or has expired. Create a new one and try again.';
+  if(e.status===403) return 'The token does not have permission to write to this repository. Give it Contents: read and write.';
+  if(e.status===404) return 'Repository or branch not found. Check the owner, name and branch, and make sure the token can see the repository. An empty repository needs one commit first.';
+  if(e.status===422) return 'GitHub rejected the upload: ' + e.message;
+  return e.message || 'Something went wrong.';
+}
+function say(msg,ok){ const m=$('msg'); m.className=ok?'ok':'bad'; m.textContent=msg; }
+function cleanPath(folder,name){
+  const parts=(folder+'/'+name).split('/').filter(x=>x && x!=='.');
+  if(parts.some(x=>x==='..')) return null;
+  return parts.join('/');
+}
+function renderList(){
+  const ul=$('list'); ul.innerHTML='';
+  files.forEach(f=>{ const li=document.createElement('li'); li.textContent=f.name+' ('+(f.size/1024).toFixed(0)+' KB)'; ul.appendChild(li); });
+  $('go').disabled=files.length===0;
+}
+$('files').onchange=e=>{
+  files=Array.from(e.target.files);
+  const big=files.find(f=>f.size>MAX);
+  if(big){ say(big.name+' is larger than 25 MB. Choose a smaller file.',false); files=files.filter(f=>f.size<=MAX); }
+  else say('',true);
+  renderList();
+};
+
+$('go').onclick=async()=>{
+  const tok=$('tok').value.trim(), owner=$('owner').value.trim(), repo=$('repo').value.trim();
+  const branch=$('branch').value.trim()||'main';
+  const folder=$('folder').value.trim().replace(/^\/+|\/+$/g,'');
+  const msg=$('commitMsg').value.trim()||'Upload files with VipTools GitHub Uploader';
+  if(!tok||!owner||!repo) return say('Enter your token, repository owner and repository name.',false);
+  if(!files.length) return say('Choose at least one file.',false);
+  const paths=files.map(f=>cleanPath(folder,f.name));
+  if(paths.some(p=>!p)) return say('One of the file names is not allowed.',false);
+  if(new Set(paths).size!==paths.length) return say('Two files would go to the same path. Rename one of them.',false);
+  $('go').disabled=true; $('links').innerHTML='';
+  const R='/repos/'+enc(owner)+'/'+enc(repo);
+  try{
+    say('Checking the repository...',true);
+    const ref=await gh(tok,'GET',R+'/git/ref/heads/'+enc(branch));
+    const headSha=ref.object.sha;
+    const head=await gh(tok,'GET',R+'/git/commits/'+headSha);
+    const tree=[];
+    for(let i=0;i<files.length;i++){
+      say('Uploading '+(i+1)+' of '+files.length+': '+files[i].name+'...',true);
+      const blob=await gh(tok,'POST',R+'/git/blobs',{content:b64(await files[i].arrayBuffer()),encoding:'base64'});
+      tree.push({path:paths[i],mode:'100644',type:'blob',sha:blob.sha});
+    }
+    say('Creating the commit...',true);
+    const newTree=await gh(tok,'POST',R+'/git/trees',{base_tree:head.tree.sha,tree});
+    const commit=await gh(tok,'POST',R+'/git/commits',{message:msg,tree:newTree.sha,parents:[headSha]});
+    await gh(tok,'PATCH',R+'/git/refs/heads/'+enc(branch),{sha:commit.sha,force:false});
+    say('Uploaded '+files.length+' file'+(files.length===1?'':'s')+' in one commit.',true);
+    const base='https://github.com/'+owner+'/'+repo+'/blob/'+branch+'/';
+    paths.forEach(p=>{ const li=document.createElement('li'); const a=document.createElement('a'); a.href=base+p.split('/').map(encodeURIComponent).join('/'); a.rel='noopener'; a.textContent=p; li.appendChild(a); $('links').appendChild(li); });
+  }catch(e){ say(friendly(e),false); }
+  finally{ $('go').disabled=files.length===0; }
+};
+})();
+</script></main></body></html>

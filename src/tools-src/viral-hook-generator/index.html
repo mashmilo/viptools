@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Viral Hook Generator | VipTools</title></head><body><main class="w"><div class="box" id="app">
+<label>Your topic <input id="topic" maxlength="80" placeholder="e.g. saving money on groceries" autocomplete="off"></label>
+<label>Where will you post it? <select id="plat"><option value="yt">YouTube video</option><option value="short">TikTok, Reels or Shorts</option><option value="blog">Blog or article</option></select></label>
+<p><button type="button" id="gen">Generate 8 hooks</button> <button type="button" id="copy" disabled>Copy all</button></p>
+<p id="msg" class="muted" aria-live="polite"></p>
+<ol id="out"></ol>
+</div><div class="ad"></div><article>
+<p>Strong hooks decide whether people stay for the rest of a video, post or article. Enter your topic, choose where you will publish, and get eight hook lines you can edit and reuse. Everything is generated in your browser.</p>
+<h2>How to use Viral Hook Generator</h2>
+<p>Describe your topic in a few words, pick the platform, and press Generate. Choose the line that fits your voice best, change the wording to match your audience, and use it as the first sentence of your video, caption or article.</p>
+<h2>Why hooks matter</h2>
+<p>On short-video apps and search results, people decide within seconds whether to keep watching or reading. A hook that names a problem, promises a clear result or raises a question gives viewers a reason to stay.</p>
+</article>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const GENERIC=[
+ 'Nobody tells you this about {t}, so here it is.',
+ 'Stop making this mistake with {t}.',
+ 'I tested {t} for 30 days. Here is what happened.',
+ 'The truth about {t} that most people miss.',
+ 'If you care about {t}, watch this before you start.',
+ '3 things I wish I knew about {t} sooner.',
+ 'Why {t} is harder than it looks, and how to fix it.',
+ 'Everyone is talking about {t}. Here is what actually works.',
+ 'Do this one thing with {t} and notice the difference.',
+ '{t}: the beginner guide nobody made for you.'
+];
+const BY={
+ yt:['In this video I show you the exact way to handle {t}.','Before you try {t}, know this one thing.','Here is my simple plan for {t} that you can start today.'],
+ short:['POV: you finally figured out {t}.','Wait for the end, this changes {t} forever.','Don\u2019t scroll past if {t} is giving you trouble.'],
+ blog:['Most advice on {t} is wrong. Here is what to do instead.','A 10-minute plan for {t} that actually works.','{t}, explained without the jargon.']
+};
+let lastList=[];
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+$('gen').onclick=()=>{
+  const topic=$('topic').value.trim().replace(/\s+/g,' ');
+  const out=$('out'); out.innerHTML='';
+  if(!topic){ $('msg').textContent='Enter a topic first.'; $('copy').disabled=true; return; }
+  const pool=shuffle(BY[$('plat').value].concat(GENERIC));
+  const picked=[]; const seen=new Set();
+  for(const tpl of pool){ const line=tpl.split('{t}').join(topic); if(!seen.has(line)){ seen.add(line); picked.push(line); } if(picked.length===8) break; }
+  lastList=picked;
+  picked.forEach(l=>{ const li=document.createElement('li'); li.textContent=l; out.appendChild(li); });
+  $('msg').textContent='Edit any line to match your voice.';
+  $('copy').disabled=false;
+};
+$('copy').onclick=()=>{
+  const text=lastList.join('\n');
+  const done=()=>{ $('msg').textContent='Copied to clipboard.'; };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done,()=>{ $('msg').textContent='Copy was blocked. Select the list and copy it manually.'; }); }
+  else { $('msg').textContent='Copy is not supported here. Select the list and copy it manually.'; }
+};
+})();
+</script></main></body></html>

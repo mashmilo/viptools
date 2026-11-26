@@ -1,0 +1,50 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Text to Speech | VipTools</title></head><body><main class="w"><div class="box" id="app">
+<label>Your text <textarea id="txt" rows="6" maxlength="5000" placeholder="Type or paste the text you want to hear"></textarea></label>
+<p class="muted"><span id="cnt">0</span> / 5000 characters</p>
+<label>Voice <select id="voice"></select></label>
+<label>Speed <input id="rate" type="range" min="0.5" max="2" step="0.1" value="1"> <span id="rv">1.0</span>x</label>
+<label>Pitch <input id="pitch" type="range" min="0" max="2" step="0.1" value="1"> <span id="pv">1.0</span></label>
+<p><button type="button" id="speak">Speak</button> <button type="button" id="stop">Stop</button></p>
+<p id="msg" class="muted" aria-live="polite"></p>
+</div><div class="ad"></div><article>
+<p>Turn any text into spoken audio with the voices your browser already has. Paste an article, a script or a note, pick a voice, and listen. Nothing is sent to a server.</p>
+<h2>How to use Text to Speech</h2>
+<p>Type or paste your text, choose a voice, then adjust the speed and pitch. Press Speak to listen and Stop to end playback early. Changing the voice or settings applies from the next time you press Speak.</p>
+<h2>Why use Text to Speech</h2>
+<p>Listening helps when you are reviewing your own writing, checking how a sentence sounds, studying while away from the screen, or making content more accessible to people who find long text tiring to read.</p>
+</article>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const hasTTS='speechSynthesis' in window;
+let voices=[];
+if(!hasTTS){
+  $('msg').textContent='Your browser does not support speech output. Try Chrome, Edge, Safari or Firefox.';
+  ['speak','stop'].forEach(id=>$(id).disabled=true);
+}
+function loadVoices(){
+  if(!hasTTS) return;
+  voices=speechSynthesis.getVoices();
+  const sel=$('voice'); sel.innerHTML='';
+  voices.forEach((v,i)=>{ const o=document.createElement('option'); o.value=String(i); o.textContent=v.name+' ('+v.lang+')'; sel.appendChild(o); });
+  if(!voices.length) $('msg').textContent='No voices found yet. Some browsers load them after a moment.';
+}
+if(hasTTS){ speechSynthesis.onvoiceschanged=loadVoices; loadVoices(); }
+$('txt').addEventListener('input',()=>{ $('cnt').textContent=$('txt').value.length; });
+$('rate').addEventListener('input',()=>{ $('rv').textContent=(+$('rate').value).toFixed(1); });
+$('pitch').addEventListener('input',()=>{ $('pv').textContent=(+$('pitch').value).toFixed(1); });
+$('speak').onclick=()=>{
+  const text=$('txt').value.trim();
+  if(!text){ $('msg').textContent='Type or paste some text first.'; return; }
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  const v=voices[+$('voice').value]; if(v) u.voice=v;
+  u.rate=+$('rate').value; u.pitch=+$('pitch').value;
+  u.onend=()=>{ $('msg').textContent='Finished.'; };
+  u.onerror=e=>{ if(e.error!=='interrupted'&&e.error!=='canceled') $('msg').textContent='Playback stopped: '+e.error; };
+  $('msg').textContent='Speaking...';
+  speechSynthesis.speak(u);
+};
+$('stop').onclick=()=>{ if(hasTTS){ speechSynthesis.cancel(); $('msg').textContent='Stopped.'; } };
+})();
+</script></main></body></html>

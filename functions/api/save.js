@@ -3,7 +3,7 @@
 // Required secrets (Pages settings): GITHUB_TOKEN, GITHUB_REPO (e.g. "mashmilo/viptools").
 import { isAdmin } from './_providers.js';
 
-const CATEGORIES = ['Text tools', 'Generators', 'Developer tools', 'Calculators and converters', 'Finance calculators', 'Media tools'];
+const CATEGORIES = ['Text tools', 'Generators', 'Developer tools', 'Calculators and converters', 'YouTube tools', 'Finance calculators', 'Media tools'];
 const TOOL_KINDS = ['youtube'];   // add a new kind here when you add a new API function
 
 const FIELD_RULES = {

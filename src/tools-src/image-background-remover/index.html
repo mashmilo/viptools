@@ -1,0 +1,218 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Image Background Remover | VipTools</title></head><body><main class="w"><div class="box" id="app">
+<label>Choose an image <input type="file" id="file" accept="image/*"></label>
+<div id="work" hidden>
+<canvas id="cv" style="max-width:100%;height:auto;display:block;touch-action:none;cursor:crosshair;border-radius:8px" aria-label="Preview of the cutout. Paint with the brush to refine it."></canvas>
+<p id="msg" class="muted" aria-live="polite"></p>
+<label>Colour tolerance <input id="tol" type="range" min="0" max="100" value="30"></label>
+<label>Brush size <input id="brush" type="range" min="2" max="80" value="18"></label>
+<p><b>Brush:</b> <label><input type="radio" name="mode" value="2" checked> Erase background</label> <label><input type="radio" name="mode" value="1"> Restore subject</label></p>
+<p><button type="button" id="pick" aria-pressed="false">Pick background colour</button> <button type="button" id="reset">Reset touch-ups</button></p>
+<p><label>Background <select id="bgType"><option value="transparent">Transparent</option><option value="color">Solid colour</option><option value="image">Image</option></select></label> <input type="color" id="bgColor" value="#ffffff" aria-label="Background colour"> <input type="file" id="bgFile" accept="image/*" hidden></p>
+<p><button type="button" id="dl">Download PNG</button></p>
+</div></div><div class="ad"></div><article>
+<p>Remove the background from a photo or product picture in your browser. The tool finds the colour behind the subject, cuts it out, and lets you touch up edges with a brush. Your image is never uploaded.</p>
+<h2>How to use Image Background Remover</h2>
+<p>Choose an image and wait a moment while the background colour is detected. If too much or too little disappears, move the tolerance slider. Use the brush to erase leftover background or restore parts that were cut out by mistake. Finally pick a background and download the PNG.</p>
+<h2>Why use Image Background Remover</h2>
+<p>Plain backgrounds, such as a white wall, a studio sheet or a green screen, give the cleanest result. A transparent PNG works on product listings, thumbnails and presentations without any extra software.</p>
+</article>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const MAX=2048;
+const cv=$('cv'), ctx=cv.getContext('2d');
+let W=0,H=0,px=null,auto=null,ov=null,alpha=null,seed=[255,255,255],pickMode=false,bgImg=null,painting=false,last=null;
+const fgCanvas=document.createElement('canvas');
+
+$('file').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const im=new Image();
+  im.onload=()=>{
+    const s=Math.min(1,MAX/Math.max(im.width,im.height));
+    W=Math.max(1,Math.round(im.width*s)); H=Math.max(1,Math.round(im.height*s));
+    const c=document.createElement('canvas'); c.width=W; c.height=H;
+    const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(im,0,0,W,H);
+    px=x.getImageData(0,0,W,H).data;
+    ov=new Int8Array(W*H);
+    cv.width=W; cv.height=H; fgCanvas.width=W; fgCanvas.height=H;
+    $('work').hidden=false;
+    URL.revokeObjectURL(im.src);
+    estimateBg();
+  };
+  im.onerror=()=>{ $('msg').textContent='That file could not be read as an image.'; };
+  im.src=URL.createObjectURL(f);
+};
+
+function estimateBg(){
+  const counts=new Map(), sums=new Map();
+  const add=i=>{
+    const r=px[i*4],g=px[i*4+1],b=px[i*4+2];
+    const k=((r>>4)<<8)|((g>>4)<<4)|(b>>4);
+    counts.set(k,(counts.get(k)||0)+1);
+    const s=sums.get(k)||[0,0,0,0];
+    s[0]+=r; s[1]+=g; s[2]+=b; s[3]++; sums.set(k,s);
+  };
+  for(let x=0;x<W;x++){ add(x); add((H-1)*W+x); }
+  for(let y=1;y<H-1;y++){ add(y*W); add(y*W+W-1); }
+  let best=-1,bc=0;
+  for(const [k,c] of counts) if(c>bc){ bc=c; best=k; }
+  const s=sums.get(best);
+  seed=[s[0]/s[3],s[1]/s[3],s[2]/s[3]];
+  $('msg').textContent='Background colour detected: rgb(' + seed.map(v=>Math.round(v)).join(', ') + '). Adjust the tolerance or paint to refine.';
+  autoMask();
+}
+
+// Flood fill from the image edges through pixels close to the seed colour.
+function autoMask(){
+  const tol=+$('tol').value*2.2, t2=tol*tol;
+  const bgm=new Uint8Array(W*H), q=new Int32Array(W*H);
+  let h=0,t=0;
+  const near=i=>{const dr=px[i*4]-seed[0],dg=px[i*4+1]-seed[1],db=px[i*4+2]-seed[2];return dr*dr+dg*dg+db*db<=t2;};
+  const push=i=>{ if(!bgm[i]&&near(i)){ bgm[i]=1; q[t++]=i; } };
+  for(let x=0;x<W;x++){ push(x); push((H-1)*W+x); }
+  for(let y=0;y<H;y++){ push(y*W); push(y*W+W-1); }
+  while(h<t){
+    const i=q[h++], x=i%W;
+    if(x>0) push(i-1);
+    if(x<W-1) push(i+1);
+    if(i>=W) push(i-W);
+    if(i<W*(H-1)) push(i+W);
+  }
+  auto=bgm;
+  render(true);
+}
+
+// alpha: 255 keeps a pixel, 0 removes it. Feathering softens the edge by one pixel.
+function computeAlpha(feather){
+  const n=W*H, a=new Uint8ClampedArray(n);
+  for(let i=0;i<n;i++){ const bg=ov[i]===2||(ov[i]===0&&auto[i]); a[i]=bg?0:255; }
+  if(!feather){ alpha=a; return; }
+  const out=new Uint8ClampedArray(n);
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    let sum=0,c=0;
+    for(let dy=-1;dy<=1;dy++){ const yy=y+dy; if(yy<0||yy>=H) continue;
+      for(let dx=-1;dx<=1;dx++){ const xx=x+dx; if(xx<0||xx>=W) continue; sum+=a[yy*W+xx]; c++; } }
+    out[y*W+x]=sum/c;
+  }
+  alpha=out;
+}
+
+function fillForeground(){
+  const fx=fgCanvas.getContext('2d'), id=fx.createImageData(W,H), d=id.data;
+  for(let i=0;i<W*H;i++){ d[i*4]=px[i*4]; d[i*4+1]=px[i*4+1]; d[i*4+2]=px[i*4+2]; d[i*4+3]=alpha[i]; }
+  fx.putImageData(id,0,0);
+}
+
+function render(feather){
+  if(!px) return;
+  computeAlpha(feather);
+  fillForeground();
+  show();
+}
+
+function checker(c){
+  c.fillStyle='#e5e7eb'; c.fillRect(0,0,W,H);
+  c.fillStyle='#ffffff';
+  const s=16;
+  for(let y=0;y<H;y+=s) for(let x=((y/s)%2)*s;x<W;x+=s*2) c.fillRect(x,y,s,s);
+}
+
+function paint(c,exporting){
+  const mode=$('bgType').value;
+  c.clearRect(0,0,W,H);
+  if(mode==='color'){ c.fillStyle=$('bgColor').value; c.fillRect(0,0,W,H); }
+  else if(mode==='image' && bgImg){
+    const r=Math.max(W/bgImg.width,H/bgImg.height), dw=bgImg.width*r, dh=bgImg.height*r;
+    c.drawImage(bgImg,(W-dw)/2,(H-dh)/2,dw,dh);
+  }
+  else if(!exporting){ checker(c); }
+  c.drawImage(fgCanvas,0,0);
+}
+
+function show(){ paint(ctx,false); }
+
+// Brush: size is in screen pixels, so it looks the same on every device.
+function pos(e){
+  const r=cv.getBoundingClientRect();
+  return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height];
+}
+function brushR(){ return (+$('brush').value)*W/cv.getBoundingClientRect().width; }
+function stamp(x,y,r,m){
+  const x0=Math.max(0,Math.floor(x-r)),x1=Math.min(W-1,Math.ceil(x+r));
+  const y0=Math.max(0,Math.floor(y-r)),y1=Math.min(H-1,Math.ceil(y+r));
+  for(let yy=y0;yy<=y1;yy++) for(let xx=x0;xx<=x1;xx++){
+    const dx=xx-x,dy=yy-y; if(dx*dx+dy*dy<=r*r) ov[yy*W+xx]=m;
+  }
+}
+function paintAt(e){
+  const p=pos(e), r=brushR();
+  const m=+document.querySelector('input[name=mode]:checked').value;
+  if(last){
+    const d=Math.hypot(p[0]-last[0],p[1]-last[1]);
+    const steps=Math.max(1,Math.ceil(d/Math.max(1,r/2)));
+    for(let s=0;s<=steps;s++) stamp(last[0]+(p[0]-last[0])*s/steps,last[1]+(p[1]-last[1])*s/steps,r,m);
+  } else stamp(p[0],p[1],r,m);
+  last=p;
+  render(false);
+}
+
+function pick(e){
+  const p=pos(e), x=Math.floor(p[0]), y=Math.floor(p[1]);
+  if(x<0||y<0||x>=W||y>=H) return;
+  const i=(y*W+x)*4;
+  seed=[px[i],px[i+1],px[i+2]];
+  pickMode=false;
+  $('pick').setAttribute('aria-pressed','false');
+  cv.style.cursor='crosshair';
+  $('msg').textContent='Background colour set to rgb(' + seed.join(', ') + ').';
+  autoMask();
+}
+
+cv.addEventListener('pointerdown',e=>{
+  if(!px) return;
+  if(pickMode){ pick(e); return; }
+  painting=true; last=null;
+  cv.setPointerCapture(e.pointerId);
+  paintAt(e);
+});
+cv.addEventListener('pointermove',e=>{ if(painting) paintAt(e); });
+function endStroke(){ if(painting){ painting=false; last=null; render(true); } }
+cv.addEventListener('pointerup',endStroke);
+cv.addEventListener('pointercancel',endStroke);
+
+$('pick').onclick=()=>{
+  if(!px) return;
+  pickMode=!pickMode;
+  $('pick').setAttribute('aria-pressed',String(pickMode));
+  $('msg').textContent=pickMode?'Click the background in the preview to choose its colour.':'';
+};
+$('tol').oninput=()=>autoMask();
+$('reset').onclick=()=>{ if(!px) return; ov.fill(0); render(true); };
+$('bgType').onchange=()=>{
+  const img=$('bgType').value==='image';
+  $('bgFile').hidden=!img;
+  if(img && !bgImg) $('bgFile').click();
+  if(px) show();
+};
+$('bgColor').oninput=()=>{ if(px) show(); };
+$('bgFile').onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const im=new Image();
+  im.onload=()=>{ bgImg=im; if(px) show(); URL.revokeObjectURL(im.src); };
+  im.src=URL.createObjectURL(f);
+};
+
+$('dl').onclick=()=>{
+  if(!px) return;
+  computeAlpha(true); fillForeground();
+  const ex=document.createElement('canvas'); ex.width=W; ex.height=H;
+  paint(ex.getContext('2d'),true);
+  ex.toBlob(b=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b); a.download='background-removed.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  },'image/png');
+};
+})();
+</script></main></body></html>

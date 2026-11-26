@@ -8,6 +8,7 @@ sys.path.insert(0, SRC)
 from content_more import MORE
 from content_yt import Y
 from content_img import I
+from content_new import N
 TODAY = '2026-11-23'
 BASE = 'https://viptools.online'
 
@@ -27,11 +28,11 @@ ICON_MENU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-w
 
 CATS = [
     ('Text tools', 'Count, clean and transform text.',
-     ['word-counter', 'case-converter', 'remove-duplicate-lines', 'slug-generator', 'text-to-binary']),
+     ['word-counter', 'case-converter', 'remove-duplicate-lines', 'slug-generator', 'text-to-binary', 'viral-hook-generator', 'text-to-speech']),
     ('Generators', 'Create passwords, IDs, numbers and placeholder content.',
      ['password-generator', 'uuid-generator', 'random-number-generator', 'lorem-ipsum-generator', 'meta-tag-generator']),
     ('Developer tools', 'Format, encode and decode the data developers handle every day.',
-     ['json-formatter', 'base64-encoder-decoder', 'url-encoder-decoder', 'timestamp-converter', 'color-converter']),
+     ['json-formatter', 'base64-encoder-decoder', 'url-encoder-decoder', 'timestamp-converter', 'color-converter', 'github-uploader']),
     ('Calculators and converters', 'Health, age, date, percentage and time calculations.',
      ['bmi-calculator', 'age-calculator', 'date-difference-calculator', 'percentage-calculator', 'length-converter']),
     ('YouTube tools', 'Thumbnails, tags, channel IDs, timestamps and playlist length for creators and viewers.',
@@ -39,7 +40,7 @@ CATS = [
     ('Finance calculators', 'Estimate loans, savings growth and discounts.',
      ['emi-calculator', 'compound-interest-calculator', 'discount-calculator']),
     ('Media tools', 'Work with images in your browser.',
-     ['image-compressor', 'image-resizer', 'image-format-converter', 'image-to-base64', 'image-rotator']),
+     ['image-compressor', 'image-resizer', 'image-format-converter', 'image-to-base64', 'image-rotator', 'image-background-remover', 'meme-generator']),
 ]
 CAT_OF = {s: c[0] for c in CATS for s in c[2]}
 
@@ -255,6 +256,8 @@ tool('image-compressor', 'Image Compressor', 'Image Compressor: Reduce JPG & PNG
 for _slug, _d in Y.items():
     tool(_slug, _d['name'], _d['title'], _d['desc'], _d['extra'], _d['faq'])
 for _slug, _d in I.items():
+    tool(_slug, _d['name'], _d['title'], _d['desc'], _d['extra'], _d['faq'])
+for _slug, _d in N.items():
     tool(_slug, _d['name'], _d['title'], _d['desc'], _d['extra'], _d['faq'])
 
 # ----------------------------------------------------------------- templates
@@ -546,7 +549,7 @@ headers = '''/*
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://www.googleadservices.com https://tpc.googlesyndication.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com https://*.googlesyndication.com https://*.doubleclick.net; frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://www.googleadservices.com https://tpc.googlesyndication.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://api.github.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com https://*.googlesyndication.com https://*.doubleclick.net; frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
 
 /style.css
   Cache-Control: no-cache
