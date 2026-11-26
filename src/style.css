@@ -176,3 +176,8 @@ table{max-width:100%;display:block;overflow-x:auto}
 @media (max-width:859px){.menu{display:none}}
 .fh{text-align:left}
 .copy{text-align:center}
+
+/* v10: theme toggle shows exactly one icon (sun in dark mode, moon in light mode) */
+#tb .i-moon{display:none}
+[data-theme=light] #tb .i-moon{display:block}
+[data-theme=light] #tb .i-sun{display:none}
