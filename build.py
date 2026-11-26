@@ -306,9 +306,9 @@ def head_common(title, desc, canon, robots='index,follow', og_type='website', ex
         '<meta name="theme-color" content="#6366f1">'
         '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
         '<script>try{var t=localStorage.getItem("vt-theme")||\"dark\";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>'
-        '<link rel="stylesheet" href="/style.css?v=9">'
+        '<link rel="stylesheet" href="/style.css?v=10">'
         + verif + adsense + gtag + extra_head +
-        '<script src="/site.js?v=9" defer></script></head>')
+        '<script src="/site.js?v=10" defer></script></head>')
 
 NAV_LINKS = [('/#tools', 'All tools'), ('/about.html', 'About'), ('/contact.html', 'Contact'), ('/privacy.html', 'Privacy'), ('/terms.html', 'Terms')]
 SUN_SVG = '<svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
