@@ -306,27 +306,35 @@ def head_common(title, desc, canon, robots='index,follow', og_type='website', ex
         '<meta name="theme-color" content="#6366f1">'
         '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
         '<script>try{var t=localStorage.getItem("vt-theme")||\"dark\";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>'
-        '<link rel="stylesheet" href="/style.css?v=8">'
+        '<link rel="stylesheet" href="/style.css?v=9">'
         + verif + adsense + gtag + extra_head +
-        '<script src="/site.js?v=8" defer></script></head>')
+        '<script src="/site.js?v=9" defer></script></head>')
+
+NAV_LINKS = [('/#tools', 'All tools'), ('/about.html', 'About'), ('/contact.html', 'Contact'), ('/privacy.html', 'Privacy'), ('/terms.html', 'Terms')]
+SUN_SVG = '<svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+MOON_SVG = '<svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
+BURGER_SVG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>'
 
 def header():
+    links = ''.join('<a href="%s">%s</a>' % (h, t) for h, t in NAV_LINKS)
     return ('<header class="site-header"><div class="w nav">'
         '<a class="brand" href="/">' + LOGO + '<div>Vip<span>Tools</span></div></a>'
-        '<nav class="menu" aria-label="Main"><a href="/#tools">Tools</a><a href="/about.html">About</a><a href="/contact.html">Contact</a></nav>'
-        '<div class="hbtns"><button class="icon-btn" id="tb" type="button" aria-label="Switch to light mode"></button>'
-        '<button class="icon-btn menu-btn" id="mb" type="button" aria-label="Open menu" aria-expanded="false">' + ICON_MENU + '</button></div>'
-        '</div><div class="mobile-menu" id="mm"><a href="/#tools">All tools</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms</a></div>'
-        '</header>')
+        '<nav class="menu" aria-label="Main">' + links + '</nav>'
+        '<div class="hbtns">'
+        '<button class="icon-btn" id="tb" type="button" aria-label="Switch to light mode">' + SUN_SVG + MOON_SVG + '</button>'
+        '<details class="mnav"><summary class="icon-btn" aria-label="Open menu">' + BURGER_SVG + '</summary>'
+        '<nav class="mobile-menu" aria-label="Mobile">' + links + '</nav></details>'
+        '</div></div></header>')
 
-POPULAR = ['word-counter', 'password-generator', 'json-formatter', 'emi-calculator', 'image-compressor', 'ai-video-clipper']
+POPULAR = ['word-counter', 'password-generator', 'json-formatter', 'emi-calculator', 'image-compressor']
 
 def footer():
     pop = ''.join('<a href="/tools/%s/">%s</a>' % (s_, T[s_]['name']) for s_ in POPULAR if s_ in T)
+    pages = ''.join('<a href="%s">%s</a>' % (h, t) for h, t in [('/', 'Home'), ('/about.html', 'About'), ('/contact.html', 'Contact'), ('/privacy.html', 'Privacy Policy'), ('/terms.html', 'Terms')])
     return ('<footer class="site-footer"><div class="w foot">'
-        '<div><a class="brand" href="/">' + LOGO.replace('width="32" height="32"', 'width="26" height="26"') + '<div>Vip<span>Tools</span></div></a>'
+        '<div class="fbrand"><a class="brand" href="/">' + LOGO.replace('width="32" height="32"', 'width="26" height="26"') + '<div>Vip<span>Tools</span></div></a>'
         '<p>Free, fast and private online tools. Everything runs in your browser.</p></div>'
-        '<div><h3 class="fh">Site</h3><nav class="flinks"><a href="/">Home</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></nav></div>'
+        '<div><nav class="flinks" aria-label="Site">' + pages + '</nav></div>'
         '<div><h3 class="fh">Popular tools</h3><nav class="flinks">' + pop + '<a href="/#tools">All tools</a></nav></div>'
         '</div><div class="w copy">&copy; 2026 VipTools.online</div></footer>')
 

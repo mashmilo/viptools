@@ -155,3 +155,24 @@ table{max-width:100%;display:block;overflow-x:auto}
   .thumb-btn .btn{padding:10px 12px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* v9 header and footer fixes */
+.nav{position:relative}
+.hbtns{display:flex;gap:8px;align-items:center}
+.hbtns .icon-btn,.hbtns .icon-btn:hover{width:40px;height:40px;min-width:40px;padding:0;margin:0;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:10px;display:grid;place-items:center;cursor:pointer;list-style:none}
+.icon-btn svg{width:18px;height:18px;display:block}
+.icon-btn::-webkit-details-marker{display:none}
+.i-moon{display:none}
+[data-theme=light] .i-moon{display:block}
+[data-theme=light] .i-sun{display:none}
+.mnav{position:static}
+.mnav>summary{list-style:none}
+.mobile-menu{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:6px 16px;box-shadow:0 12px 30px rgba(0,0,0,.35);z-index:60}
+.mnav[open] .mobile-menu{display:block}
+.mobile-menu a{display:block;padding:13px 2px;color:var(--text);border-bottom:1px solid var(--border);font-size:15px}
+.mobile-menu a:last-child{border-bottom:0}
+.menu a{color:var(--text);opacity:.85}
+@media (min-width:860px){.mnav{display:none}}
+@media (max-width:859px){.menu{display:none}}
+.fh{text-align:left}
+.copy{text-align:center}

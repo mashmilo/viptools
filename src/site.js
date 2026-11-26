@@ -10,15 +10,11 @@
     try{localStorage.setItem(TK,t)}catch(e){}
     var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#ffffff':'#000000';
     var b=document.getElementById('tb');
-    if(b){b.innerHTML=t==='light'?MOON:SUN;b.setAttribute('aria-label',t==='light'?'Switch to dark mode':'Switch to light mode')}
+    if(b)b.setAttribute('aria-label',t==='light'?'Switch to dark mode':'Switch to light mode');
   }
   setTheme(theme());
   var tb=document.getElementById('tb');
   if(tb)tb.addEventListener('click',function(){setTheme(theme()==='light'?'dark':'light')});
-
-  /* Mobile menu */
-  var mb=document.getElementById('mb'),mm=document.getElementById('mm');
-  if(mb&&mm)mb.addEventListener('click',function(){var o=mm.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
 
   /* Home search: filters tool cards and hides empty categories */
   var si=document.getElementById('search');
