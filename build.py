@@ -277,13 +277,13 @@ CATS = [c_ for c_ in CATS if c_[2]]
 CAT_OF = {s_: _cat(s_) for s_ in T}
 def head_common(title, desc, canon, robots='index,follow', og_type='website', extra_head=''):
     gtag = ''
-    if False:
+    if GAID:
         gtag = ('<script async src="https://www.googletagmanager.com/gtag/js?id=' + GAID + '"></script>'
                 '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}'
                 "gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});"
                 "gtag('js',new Date());gtag('config','" + GAID + "');</script>")
     adsense = ''
-    if False:
+    if ADSENSE:
         adsense = ('<meta name="google-adsense-account" content="' + ADSENSE + '">'
                    '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE + '" crossorigin="anonymous"></script>')
     verif = ''
