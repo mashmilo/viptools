@@ -66,24 +66,26 @@
       saveChoice(v);updateConsent(v==='yes');cc.hidden=true;cc.innerHTML='';
     });
   }
-  function loadSiteScripts(c){
-    window.dataLayer=window.dataLayer||[];
-    window.gtag=window.gtag||function(){dataLayer.push(arguments)};
-    window.gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
-    if(c.gaId){
-      var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(c.gaId);document.head.appendChild(s);
-      window.gtag('js',new Date());window.gtag('config',c.gaId);
-    }
-    if(c.adsenseClient){
-      var a=document.createElement('script');a.async=1;a.crossOrigin='anonymous';
-      a.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+encodeURIComponent(c.adsenseClient);
-      document.head.appendChild(a);
-    }
-    if(c.adsHeader){document.querySelectorAll('.ad').forEach(function(el){el.innerHTML=c.adsHeader})}
+  /* AdSense: the script is already in <head> (build.py). Fill up to 3 ad slots with auto-sized units.
+     Ads are never placed in the header, inside tool inputs, or in more than 3 spots per page. */
+  function placeAds(client){
+    if(!client||!window.adsbygoogle&&!document.querySelector('script[src*="adsbygoogle.js"]'))return;
+    var n=0;
+    document.querySelectorAll('.ad').forEach(function(el){
+      if(n>=3||el.getAttribute('data-filled'))return;
+      n++;el.setAttribute('data-filled','1');
+      var ins=document.createElement('ins');
+      ins.className='adsbygoogle';ins.style.display='block';
+      ins.setAttribute('data-ad-client',client);
+      ins.setAttribute('data-ad-format','auto');
+      ins.setAttribute('data-full-width-responsive','true');
+      el.appendChild(ins);
+      try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}
+    });
   }
-  fetch('/config.json?'+Date.now()).then(function(r){return r.json()}).then(function(c){
-    loadSiteScripts(c);setupConsentBanner();
-  }).catch(function(){setupConsentBanner()});
+  var adMeta=document.querySelector('meta[name="google-adsense-account"]');
+  setupConsentBanner();
+  if(adMeta)placeAds(adMeta.content);
 
   /* Tool pages: optional YouTube playlist lookup is handled inline on that page */
 })();
