@@ -269,6 +269,118 @@ for _s in T:
     if _s in MORE:
         T[_s]['extra'] = MORE[_s]['extra']
         T[_s]['faq'] = MORE[_s]['faq']
+SEO_TITLE = {
+ 'word-counter': 'Word Counter Online: Count Words & Characters',
+ 'password-generator': 'Password Generator: Strong Random Passwords',
+ 'json-formatter': 'JSON Formatter & Validator Online',
+ 'case-converter': 'Case Converter: Title Case & Uppercase',
+ 'lorem-ipsum-generator': 'Lorem Ipsum Generator: Placeholder Text Online',
+ 'base64-encoder-decoder': 'Base64 Encoder & Decoder Online',
+ 'url-encoder-decoder': 'URL Encoder & Decoder Online',
+ 'length-converter': 'Length Converter: Meters, Feet, Miles & More',
+ 'age-calculator': 'Age Calculator: Exact Age in Years & Days',
+ 'percentage-calculator': 'Percentage Calculator: Percent of a Number',
+ 'bmi-calculator': 'BMI Calculator: Body Mass Index Online',
+ 'emi-calculator': 'EMI Calculator: Monthly Loan Payment',
+ 'random-number-generator': 'Random Number Generator: Pick Numbers Fast',
+ 'color-converter': 'Color Converter: HEX, RGB & HSL Online',
+ 'remove-duplicate-lines': 'Remove Duplicate Lines Online',
+ 'slug-generator': 'Slug Generator: SEO-Friendly URL Slugs',
+ 'meta-tag-generator': 'Meta Tag Generator: Title & Description Tags',
+ 'youtube-playlist-length-calculator': 'YouTube Playlist Length Calculator',
+ 'timestamp-converter': 'Unix Timestamp Converter: Epoch to Date',
+ 'text-to-binary': 'Text to Binary Converter Online',
+ 'compound-interest-calculator': 'Compound Interest Calculator: Savings Growth',
+ 'discount-calculator': 'Discount Calculator: Sale Price & Savings',
+ 'date-difference-calculator': 'Date Difference Calculator: Days Between Dates',
+ 'uuid-generator': 'UUID Generator: Random Version 4 UUIDs',
+ 'image-compressor': 'Image Compressor: Reduce JPG & PNG Size',
+}
+SEO_DESC = {
+ 'age-calculator': 'Calculate your exact age in years, months and days from your date of birth. Free, instant and private. Your date is never sent to a server.',
+ 'percentage-calculator': 'Calculate a percentage of a number, what percent one number is of another, or the percentage change between two values. Free and instant.',
+ 'base64-encoder-decoder': 'Encode text to Base64 or decode Base64 back to readable text. Free online Base64 tool that runs in your browser, with no uploads and no sign-up.',
+ 'date-difference-calculator': 'Find the exact number of days between two dates for deadlines, countdowns and project planning. Free, instant and handles leap years.',
+ 'discount-calculator': 'Calculate the sale price and the amount you save from any percentage discount. Stacked discounts explained. Quick, accurate and free.',
+ 'lorem-ipsum-generator': 'Generate Lorem Ipsum placeholder text by paragraph, sentence or word count for mockups, layouts and web designs. Free, instant and copy-ready.',
+ 'text-to-binary': 'Convert text to binary code (ones and zeros) and back. See each character as its 8-bit binary value. Free, instant and private in your browser.',
+}
+SEO_ADD = {
+ 'age-calculator': [('Why an exact age matters', ['Official records, school admissions and some benefit rules count age in complete years, while everyday conversation often rounds it. An exact age in years, months and days shows the difference, which matters for babies and young children, where a few months can change a milestone or eligibility. Use the date of birth printed on the document you need, because the same person can show different ages on different forms.'])],
+ 'color-converter': [('Working with colour codes in projects', ['Designers often receive a colour as a HEX code from a brand guide but need RGB for an app or HSL for a hover state. Converting between the formats keeps the hue the same while you adjust brightness or saturation. Always check the final colour on a real screen, because monitors and printers reproduce colours differently.'])],
+ 'compound-interest-calculator': [('Comparing compounding frequencies', ['Monthly compounding gives a slightly higher result than annual compounding at the same rate, because interest is added more often. Use the calculator to compare savings accounts that advertise different schedules. An advertised rate is often the annual nominal rate, so check the stated frequency and any fees before you decide.'])],
+ 'discount-calculator': [('Comparing offers fairly', ['When two shops offer different discounts, compare the final price rather than the percentage. Two successive 15% discounts give 100 × 0.85 × 0.85 = 72.25, which is 27.75% off, so a single 30% discount is slightly better. Always work out the final price before choosing an offer.'])],
+ 'image-compressor': [('Choosing the right quality setting', ['Start at around 80 for photos and check the result at full size. Images with fine text, logos or sharp lines show artefacts sooner, so use a higher setting for them or keep the original PNG. Resizing before compressing usually saves more bytes than lowering quality alone, especially for large camera photos.'])],
+ 'length-converter': [('Converting common measurements', ['One kilometre is 0.621371 miles, so a 10 km run is about 6.2 miles. One inch equals exactly 2.54 centimetres, which is why printed sizes and screen sizes often convert cleanly. Round only at the end of a calculation, because rounding early can add up small errors across several steps.'])],
+ 'random-number-generator': [('Using the generator for fair picks', ['Set the range and the count, then generate. Keep duplicates off when every winner must be different. For a raffle, publish the number of entries before the draw so everyone can see how the result was made, and note the date and time of the draw.'])],
+ 'remove-duplicate-lines': [('Cleaning data before you use it', ['Duplicate lines often come from merged lists, repeated copy and paste, or log files that record the same event twice. Removing them first avoids sending the same email twice or counting a keyword more than once. Test the output on a small sample before you process a large file, especially if the list has trailing spaces or mixed capitals.'])],
+ 'text-to-binary': [('How the conversion works', ['Each character is looked up in a code table, usually ASCII, or UTF-8 for wider character sets, and written as a group of 8 bits. Spaces and punctuation convert too. Compare the output with the original text to see how each letter maps to its code.'])],
+ 'timestamp-converter': [('When timestamps go wrong', ['Timestamps are stored in UTC, so the same moment can look several hours different in local time. A timestamp from a log file may be in seconds or milliseconds, and mixing the two gives dates far in the past or future. If a converted date looks wrong, check the unit and the time zone first.'])],
+ 'uuid-generator': [('Choosing an ID strategy', ['Random version 4 UUIDs need no coordination between servers, which makes them useful for distributed systems. Some teams prefer time-ordered IDs such as UUID version 7 for database indexes, because random values can slow inserts on very large tables. Use this generator for ad-hoc IDs, test data and prototypes.'])],
+ 'date-difference-calculator': [('Counting working days', ['For example, there are 30 days between 1 March and 31 March in a non-leap year. This tool counts calendar days. Business deadlines often exclude weekends and public holidays, so count working days separately when a contract or notice period requires it. A calendar difference is a good first estimate for planning.'])],
+}
+
+SEO_HOW = {
+ 'age-calculator': [("How to use this age calculator", ["Enter your date of birth in the Date of birth field. The result updates straight away and shows your age in complete years, then the remaining months and days.", "To check someone else's age, enter their date of birth instead. Nothing is saved, so you can calculate as many ages as you need in one session."]), ("Tips for accurate results", ["Use the date exactly as it appears on the official document you are filling in. Some forms count age on a fixed cut-off date rather than today, so the figure may differ slightly from the result here.", "For babies, the day count is often more useful than the year count, because it shows how many days old the baby is."])],
+ 'ai-video-clipper': [("How to use the AI video clipper", ["Choose a video file in MP4 or WebM format. Click AI find highlights to let the tool suggest moments worth clipping, or set the Start and End times yourself. The Start = current time and End = current time buttons fill the fields from the video you are watching.", "Pick an output shape: Original keeps the source frame, while Vertical 9:16 suits YouTube Shorts, Instagram Reels and TikTok. Click Export clip to save the result to your device."]), ("Tips for good clips", ["Keep clips short, usually under a minute, because short vertical clips hold attention on mobile. Start a few seconds before the key line so the viewer has context.", "Large videos take longer to process in the browser, so trim the source first if the export feels slow."])],
+ 'base64-encoder-decoder': [("How to use the Base64 tool", ["Paste text or a Base64 string into the box. Click Encode to convert plain text into Base64, or click Decode to turn a Base64 string back into readable text.", "The output appears in the same area, so you can copy it into your code, API request or configuration file."]), ("Common uses", ["Developers use Base64 to embed small images in CSS or HTML, to pass data in HTTP headers, and to inspect values in JSON Web Tokens. Remember that Base64 is not encryption, so anyone can decode the output."])],
+ 'bmi-calculator': [("How to use the BMI calculator", ["Enter your weight in kilograms in the Weight (kg) field and your height in centimetres in the Height (cm) field. The result shows your Body Mass Index and the standard adult category.", "If you measure in pounds or feet and inches, convert first: one pound is 0.4536 kg and one inch is 2.54 cm."]), ("Using BMI wisely", ["BMI is a screening number, not a diagnosis. Two people with the same BMI can have very different body composition. If you want a fuller picture, ask a doctor about waist measurement, blood pressure and blood tests."])],
+ 'case-converter': [("How to use the case converter", ["Type or paste your text into the box. Click UPPERCASE, lowercase, Title Case or Sentence case to change the whole text at once. The converted text replaces the box, so you can copy it straight away.", "Work through the options in order if you need several changes, for example Sentence case first and then a fix for a single name."]), ("Writing tips", ["Use Sentence case for body text and Title Case for headings. Avoid all uppercase for long passages because it is harder to read and can look like shouting online."])],
+ 'color-converter': [("How to use the colour converter", ["Enter a colour in one format, either a HEX code such as #6366F1, an RGB value or an HSL value. The other two formats update automatically, so you can copy the one your code or design tool needs."]), ("When each format is useful", ["Use HEX for short CSS declarations and brand guides. Use RGB when you need to adjust the red, green or blue channels. Use HSL when you want to make a colour lighter or darker while keeping its hue, which is ideal for hover states and tints."])],
+ 'compound-interest-calculator': [("How to use the compound interest calculator", ["Enter your starting amount in Principal, the yearly rate in Rate (% per year), the number of years, and how many times a year interest is added in Compounds per year. The result shows the estimated final balance.", "Change one input at a time to see its effect. Trying a longer period often shows a bigger difference than a small change in the rate."]), ("Using the estimate", ["The calculator assumes a steady rate with no withdrawals, taxes or fees. Real investments change in value, so treat the result as an illustration of how growth builds up over time."])],
+ 'date-difference-calculator': [("How to use the date difference calculator", ["Pick the Start date and the End date. The tool shows the number of days between them. Swap the dates if you want a negative result to become positive, or check the order if the number looks wrong."]), ("Practical examples", ["Use it to count days until a visa expires, measure the length of a project, or check how many days remain on a notice period. Add one to the result if your rule counts both the first and last day."])],
+ 'discount-calculator': [("How to use the discount calculator", ["Enter the Original price, then the Discount % you are given. The sale price and the amount you save are shown at once. Use this to compare two offers before you buy."]), ("Checking offers properly", ["Compare the final prices rather than the percentages, especially when a store adds a second discount at checkout. Remember that sales tax or delivery charges may be added after the discount."])],
+ 'emi-calculator': [("How to use the EMI calculator", ["Enter the Loan amount, the yearly Interest rate (% per year) and the loan length in Years. The monthly EMI, total interest and total payment update together.", "Try two or three loan lengths to see the trade-off between a lower monthly payment and the total interest paid over the loan."]), ("Before you borrow", ["Ask the lender for the exact EMI, processing fees and any insurance, because these can change the total cost. Use this calculator to compare offers, not as a final quote."])],
+ 'github-uploader': [("How to use the GitHub uploader", ["Create a fine-grained GitHub token with Contents permission set to read and write, and only for the repository you need. Paste it into the GitHub token field and enter the Repository owner, Repository name and Branch.", "Optionally add a folder inside the repo, write a Commit message, choose your Files and click Upload to GitHub. Each file is committed to the branch you named."]), ("Keep your token safe", ["Use a token that only covers one repository and revoke it in your GitHub settings when you finish. Never paste a token into a public page, screenshot or shared document."])],
+ 'image-background-remover': [("How to use the background remover", ["Choose an image. Click Erase background to remove the backdrop, then use the Colour tolerance and Brush size controls to refine the edges. Use Restore subject to bring back parts of the main object that were removed by mistake.", "Choose the background you want: Transparent, a Solid colour or an Image. Use Pick background colour for a custom shade, and Reset touch-ups to start the edits again."]), ("Getting clean edges", ["Images with a clear contrast between the subject and the background give the best results. Increase the brush size for large areas and reduce it when working around hair or fine edges. Download PNG keeps transparency; JPG does not."])],
+ 'image-compressor': [("How to use the image compressor", ["Choose a JPG or PNG image and move the Quality slider. The file size before and after is shown so you can see the saving. When the result looks right, download the compressed JPG."]), ("Getting the best balance", ["For photos, values between about 60 and 80 usually keep quality high while cutting file size sharply. Compress the image at its final display size, because a smaller image needs fewer bytes than a large one."])],
+ 'image-format-converter': [("How to use the image format converter", ["Choose an image, then pick the format you want in Convert to. For JPG and WebP, set the Quality value. Download the converted file once the preview looks right."]), ("Choosing a format", ["Use JPG for photos without transparency, PNG when you need transparent backgrounds or sharp graphics, and WebP for smaller files on websites. Check that the new format is supported by the platform you are uploading to."])],
+ 'image-resizer': [("How to resize an image", ["Choose a JPG, PNG, WebP or GIF file. Enter a Width or Height in pixels and keep Keep aspect ratio ticked so the image is not stretched. Or use Or resize by percentage to scale the whole image.", "Pick an Output format and download the resized file."]), ("Common sizes", ["Social media posts often need 1080 pixels wide, while website banners are usually wider. Resize to the size the image will be shown at, because oversized images slow pages down without looking better."])],
+ 'image-rotator': [("How to rotate or flip an image", ["Choose an image. Use Rotate left or Rotate right to turn it by 90 degrees, and Flip horizontal or Flip vertical to mirror it. Click Reset to return to the original orientation before you save."]), ("When you need it", ["Phone photos are sometimes saved sideways, and scanned documents are often upside down. Rotate the image here, then save it again before uploading."])],
+ 'image-to-base64': [("How to convert an image to Base64", ["Choose an image and the Base64 output appears in the box. Tick Output only the Base64 text (no data: prefix) if your code needs the raw string, then click Copy to clipboard."]), ("When to embed images this way", ["Small icons and logos can be embedded in HTML or CSS to save a request. Large photos should stay as normal files, because Base64 makes data about a third bigger."])],
+ 'json-formatter': [("How to use the JSON formatter", ["Paste your JSON into the box. Click Format to indent it with clear line breaks, or Minify to remove all spaces and line breaks. Click Copy to copy the result.", "If the JSON is invalid, the tool shows an error message. Fix the reported line and format again."]), ("Common JSON mistakes", ["Trailing commas, single quotes, unquoted keys and comments are not allowed in standard JSON. Most errors are found by checking the line reported in the message."])],
+ 'length-converter': [("How to convert length units", ["Enter a value and choose the unit you are converting from and the unit you want. The result is shown instantly for metres, kilometres, miles, feet, inches, yards and centimetres."]), ("Useful conversions", ["A marathon is 42.195 kilometres, about 26.2 miles. A standard football pitch is around 100 metres long. Use the converter when a product, travel or building spec uses a different system."])],
+ 'lorem-ipsum-generator': [("How to generate placeholder text", ["Choose the number of Paragraphs and click Generate. Copy the text from the output and paste it into your design, mockup or layout."]), ("Using placeholder text well", ["Match the placeholder length to your real content so the layout is tested properly. Remove the placeholder before publishing anything."])],
+ 'meme-generator': [("How to make a meme", ["Choose an image. Type your words in Top text and Bottom text, and adjust Text size until the caption fits. Click Download meme to save the finished image."]), ("Making memes responsibly", ["Only use images you have the right to share, and avoid captions that target people with abuse or harassment. Check that the joke works in a smaller preview, because most memes are seen on phones."])],
+ 'meta-tag-generator': [("How to write meta tags", ["Enter your Page title and Meta description, and the page URL in the URL field. The tool shows length guidance and builds the matching HTML tags for you to copy into the head section of your page.", "Keep the title under about 60 characters and the description under about 155, so the full text is more likely to appear in search results."]), ("Writing tags that get clicks", ["Put the main topic first, add the brand at the end, and describe what the visitor will get. Write a different title and description for every page rather than repeating one across the site."])],
+ 'password-generator': [("How to generate a password", ["Set the Length using the slider or number field. Tick A-Z for capital letters, 0-9 for digits and Symbols for punctuation, then click Generate. Click Copy to copy the password."]), ("Choosing settings", ["Use at least 16 characters for important accounts. If a site rejects symbols, generate again with Symbols turned off rather than changing the password by hand."])],
+ 'percentage-calculator': [("How to use the percentage calculator", ["Fill in the form you need. For What is % of, enter a percentage and a number to get the result. For is what %, enter two numbers to see what percentage the first is of the second."]), ("Working out percentage change", ["To find percentage change, subtract the old value from the new value, divide by the old value and multiply by 100. For example, going from 80 to 100 is a 25% increase."])],
+ 'random-number-generator': [("How to pick random numbers", ["Enter the Min and Max values for your range and click Generate. The result is a whole number that is equally likely to be any value in the range."]), ("Drawing numbers fairly", ["For unique picks, make sure you generate without repeats for each draw. For a giveaway, record the range, the entry count and the time, so the draw can be checked afterwards."])],
+ 'remove-duplicate-lines': [("How to remove duplicate lines", ["Paste your list into the box with one item per line. Click Remove duplicates. The output keeps the first copy of each line in its original order."]), ("Cleaning lists", ["Clean the list before importing it into a mailing tool or ad platform. Check for extra spaces at the ends of lines, because they can make two identical items look different."])],
+ 'slug-generator': [("How to create a slug", ["Enter a title or phrase in the box. The slug is generated as you type: lowercase, with spaces and symbols replaced by hyphens and accents removed. Copy it into your URL."]), ("Slug tips", ["Keep slugs short and include the main keyword once. Use the slug on one page only, and add a redirect if you change it later."])],
+ 'text-to-binary': [("How to convert text to binary", ["Enter text in the box and click To binary to see each character as 8-bit groups. To reverse the process, enter binary digits separated by spaces and click To text."]), ("Good to know", ["Letters, numbers and common punctuation convert cleanly. Emoji and non-English characters take more bytes, so their binary output is longer."])],
+ 'text-to-speech': [("How to hear your text read aloud", ["Type or paste your text into Your text. Choose a Voice, then adjust Speed and Pitch. Click Speak to hear it and Stop to end playback.", "The voices come from your browser and device, so the choice and quality depend on what is installed."]), ("Uses", ["Use text to speech to proofread your writing, check how a script sounds, or make content easier to follow. Listening often catches mistakes that reading misses."])],
+ 'timestamp-converter': [("How to convert a timestamp", ["To turn a Unix timestamp into a date, enter the number of seconds in Unix timestamp (seconds). To go the other way, pick a Date and time. Click Use current time to fill in the present moment."]), ("Checking the result", ["Compare the output with UTC if you are debugging a server or API, because most logs store times in UTC."])],
+ 'url-encoder-decoder': [("How to encode or decode a URL", ["Enter a URL or text in the box. Click Encode to make it safe for a web address, or Decode to turn percent codes back into readable text."]), ("When to use it", ["Encode values you put into query strings, such as search terms with spaces or ampersands. Encode each value on its own rather than the whole URL."])],
+ 'uuid-generator': [("How to generate UUIDs", ["Enter how many you need in How many and click Generate. Copy the list and paste it into your database, code or test data."]), ("Using UUIDs", ["Each generated value is a random version 4 UUID. They are unique in practice, so you can create them independently on different machines."])],
+ 'viral-hook-generator': [("How to get hook ideas", ["Enter your topic in Your topic, for example saving money on groceries. Choose where you will post it: YouTube video, TikTok, Reels or Shorts. Click Generate 8 hooks, then Copy all to save the list."]), ("Using hooks well", ["Use the first line as the opening of your video or post, and test two or three hooks. Keep the hook in your own voice and make the promise true in the content."])],
+ 'word-counter': [("How to use the word counter", ["Paste or type your text into the box. Words, characters, sentences, paragraphs and estimated reading time update as you type. Nothing is uploaded or stored."]), ("Using the counts", ["Check word limits for essays, applications and listings, and keep meta descriptions near 155 characters so they display fully in search."])],
+ 'youtube-channel-id-finder': [("How to find a channel ID", ["Paste a channel link, an @handle or a video link into the box and click Find channel ID. Copy the ID, or click Copy RSS feed link to get the channel's feed address."]), ("When you need a channel ID", ["Channel IDs are used in embed codes, RSS readers and API requests. A handle is easier to remember but the ID never changes."])],
+ 'youtube-playlist-length-calculator': [("How to calculate playlist length", ["Paste a public playlist link to read the total length from YouTube, or enter the Number of videos and the Average length (minutes) to estimate it. The result shows watch time at normal speed and at faster playback speeds."]), ("Planning your viewing", ["Use the result to plan a course or split a series across the week. Real videos vary in length, so leave some spare time."])],
+ 'youtube-tag-extractor': [("How to extract video tags", ["Paste the YouTube video link or ID into the field and click Extract tags. Use Copy tags (comma separated) for the tag field in YouTube Studio, or Copy as hashtags for a description."]), ("Using tags sensibly", ["Tags help YouTube understand a video, but titles, thumbnails and the first lines of the description matter more. Use tags that describe the video honestly."])],
+ 'youtube-thumbnail-downloader': [("How to download a thumbnail", ["Paste the YouTube video link or ID and click Get thumbnails. Choose the size you need and save the image. The thumbnail is provided by YouTube for public videos."]), ("Respect copyright", ["Thumbnails belong to the video creator. Download them for reference, review or with permission, and do not reuse them as your own artwork."])],
+ 'youtube-timestamp-link-generator': [("How to make a timestamp link", ["Paste the video link or ID, then enter Hours, Minutes and Seconds for the moment you want to link to. Copy the Short link or Full link, or the Embed URL for a web page."]), ("Where timestamps help", ["Timestamps help viewers jump to the right part of a long video. Add them to comments, notes and articles so readers can find the section quickly."])],
+}
+
+for _k, _v in SEO_HOW.items():
+    SEO_ADD[_k] = list(SEO_ADD.get(_k, [])) + [(h, ps) for h, ps in _v]
+
+_AUTO_DONE = []
+for _s in T:
+    if _s in SEO_TITLE:
+        _t = SEO_TITLE[_s] + ' | VIP Tools'
+    else:
+        _n = T[_s]['name']
+        _t = (_n + ' Online | VIP Tools') if len(_n + ' Online | VIP Tools') <= 60 else (_n + ' | VIP Tools')
+        _AUTO_DONE.append(_s)
+    assert len(_t) <= 60, (_s, len(_t), _t)
+    T[_s]['title'] = _t
+    if _s in SEO_DESC:
+        T[_s]['desc'] = SEO_DESC[_s]
+    assert 120 <= len(T[_s]['desc']) <= 158, (_s, len(T[_s]['desc']))
+    for _h, _ps in SEO_ADD.get(_s, []):
+        T[_s]['extra'] = list(T[_s]['extra']) + [(_h, _ps)]
+
 ENABLED = [s_ for s_ in T if OV.get(s_, {}).get('enabled', True)]
 _base = {s_: c_ for c_, _, ss_ in CATS for s_ in ss_}
 def _cat(s_):
@@ -285,7 +397,8 @@ def head_common(title, desc, canon, robots='index,follow', og_type='website', ex
                 "gtag('js',new Date());gtag('config','" + GAID + "');</script>")
     adsense = ''
     if ADSENSE:
-        adsense = ('<meta name="google-adsense-account" content="' + ADSENSE + '">'
+        adsense = ('<link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>'
+                   '<meta name="google-adsense-account" content="' + ADSENSE + '">'
                    '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE + '" crossorigin="anonymous"></script>')
     verif = ''
     if GSC: verif += '<meta name="google-site-verification" content="' + GSC + '">'
@@ -302,10 +415,15 @@ def head_common(title, desc, canon, robots='index,follow', og_type='website', ex
         '<meta property="og:title" content="' + html.escape(title, quote=True) + '">'
         '<meta property="og:description" content="' + html.escape(desc, quote=True) + '">'
         '<meta property="og:url" content="' + canon + '">'
-        '<meta name="twitter:card" content="summary">'
+        '<meta property="og:locale" content="en_US">'
+        '<meta property="og:image" content="' + BASE + '/og.png">'
+        '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
+        '<meta name="twitter:card" content="summary_large_image">'
+        '<meta name="twitter:image" content="' + BASE + '/og.png">'
         '<meta name="theme-color" content="#6366f1">'
         '<link rel="icon" href="/favicon.svg" type="image/svg+xml">'
         '<script>try{var t=localStorage.getItem("vt-theme")||\"dark\";document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>'
+        '<link rel="preload" href="/style.css?v=10" as="style">'
         '<link rel="stylesheet" href="/style.css?v=10">'
         + verif + adsense + gtag + extra_head +
         '<script src="/site.js?v=10" defer></script></head>')
@@ -336,12 +454,12 @@ def footer():
         '<p>Free, fast and private online tools. Everything runs in your browser.</p></div>'
         '<div><nav class="flinks" aria-label="Site">' + pages + '</nav></div>'
         '<div><h3 class="fh">Popular tools</h3><nav class="flinks">' + pop + '<a href="/#tools">All tools</a></nav></div>'
-        '</div><div class="w copy">&copy; 2026 VipTools.online</div></footer>')
+        '</div><div class="w copy">&copy; 2026 VIP Tools (VipTools.online)</div></footer>')
 
 def ldjson(obj):
     return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False) + '</script>'
 
-ORG = {"@type": "Organization", "@id": BASE + "/#org", "name": "VipTools", "alternateName": ["Vip Tools", "VipTools.online"], "url": BASE + "/", "logo": BASE + "/favicon.svg"}
+ORG = {"@type": "Organization", "@id": BASE + "/#org", "name": "VipTools", "alternateName": ["VIP Tools", "Vip Tools", "VipTools", "viptools", "viptools.online", "VipTools.online"], "url": BASE + "/", "logo": BASE + "/favicon.svg"}
 
 def page(title, desc, path, body, schema=(), robots='index,follow', og_type='website', extra_head='', status_note=''):
     canon = BASE + path
@@ -425,8 +543,8 @@ for name, blurb, slugs in CATS:
             (html.escape((T[s]['name'] + ' ' + T[s]['desc']).lower(), quote=True), s, html.escape(T[s]['name']), html.escape(T[s]['desc'].split('.')[0] + '.')))
     cards += '</div></section>'
 
-home_body = ('<section class="hero"><h1>Free online tools that just work</h1>'
-    '<p>VipTools (also written Vip Tools) is a collection of free tools for text, calculations, developers and images. Each tool runs in your browser, so the data you enter is processed on your device and is not uploaded to our servers.</p>'
+home_body = ('<section class="hero"><h1>VIP Tools: free online tools that just work</h1>'
+    '<p>VIP Tools (also written VipTools or viptools.online) is a collection of free tools for text, calculations, developers and images. Each tool runs in your browser, so the data you enter is processed on your device and is not uploaded to our servers.</p>'
     '<div class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>'
     '<input id="search" type="search" placeholder="Search tools (e.g. password, json, emi)" aria-label="Search tools"></div></section>'
     '<div class="ad" aria-label="Advertisement"></div>'
@@ -437,14 +555,14 @@ home_body = ('<section class="hero"><h1>Free online tools that just work</h1>'
     '<p>Every calculator shows its formula or method, and the guides on each tool page explain what the results mean and where they have limits. Read our <a href="/about.html">About page</a> to learn how we build and check the tools, or <a href="/contact.html">contact us</a> with feedback.</p></section>'
     ) % (len(ENABLED), cards)
 home_schema = [
-    {"@type": "WebSite", "@id": BASE + "/#website", "url": BASE + "/", "name": "VipTools", "alternateName": ["Vip Tools", "VipTools.online"], "publisher": {"@id": BASE + "/#org"}, "inLanguage": "en"},
+    {"@type": "WebSite", "@id": BASE + "/#website", "url": BASE + "/", "name": "VipTools", "alternateName": ["VIP Tools", "Vip Tools", "VipTools", "viptools.online"], "publisher": {"@id": BASE + "/#org"}, "inLanguage": "en"},
     {"@type": "ItemList", "name": "VipTools free online tools", "numberOfItems": len(ENABLED),
      "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": T[s]['name'], "url": BASE + "/tools/%s/" % s}
                          for i, s in enumerate([x for c in CATS for x in c[2]])]},
 ]
 open(OUT + '/index.html', 'w', encoding='utf-8').write(page(
-    'VipTools: Free Online Tools for Text, Calculators, Developers & Images',
-    'VipTools offers free, private online tools for text, calculators, developers, creators and images. No sign-up, and everything runs in your browser.',
+    'VIP Tools: Free Online Tools for Text & Calculators',
+    'VIP Tools offers free, private online tools for text, calculators, developers and images. No sign-up. Everything runs in your browser.',
     '/', home_body, schema=home_schema))
 
 # ------------------------------------------------------------- static pages
@@ -454,7 +572,7 @@ def simple(title, desc, path, article):
     return page(title, desc, path, body, schema=[crumb_ld([("Home", "/"), (title.split(' | ')[0], path)])])
 
 ABOUT = '''<h1>About VipTools</h1>
-<p>VipTools (also written Vip Tools) is a free collection of everyday online tools for text, calculations, developers and images. It was built to be fast, simple and private: most tools run entirely in your browser, and there is no sign-up.</p>
+<p>VIP Tools (also written VipTools or viptools.online) is a free collection of everyday online tools for text, calculations, developers and images. It was built to be fast, simple and private: most tools run entirely in your browser, and there is no sign-up.</p>
 <h2>Who runs VipTools</h2>
 <p>VipTools is operated by {OWNER}. The site is an independent project. You can reach the operator at <a href="mailto:contact@viptools.online">contact@viptools.online</a>.</p>
 <h2>Our mission</h2>
@@ -523,13 +641,16 @@ TERMS = '''<h1>Terms of Use</h1>
 <h2>Changes and contact</h2>
 <p>We may revise these terms at any time. Changes take effect when posted. Questions? Contact us at <a href="mailto:contact@viptools.online">contact@viptools.online</a>.</p>'''
 
+CONTACT += '<h2>How we handle your message</h2><p>Messages sent by email are read by the VIP Tools team and are not sold or shared with third parties. Please do not send personal financial, medical or identity details, because the tools themselves do not need them and they are not required to get help.</p>'
+CONTACT += '<h2>Frequently asked questions</h2><p>Looking for help with a specific tool? Include the tool name, the input you used and the result you expected, and we can usually reproduce the problem quickly. Feature requests are read and prioritised by how many people need them.</p>'
+TERMS += '<h2>Plain-language summary</h2><p>In short, the tools are free, they run in your browser, and you are responsible for checking results before you rely on them. We may change or remove tools, and we are not liable for losses from using the site. Contact us if anything here is unclear.</p>'
 ABOUT = ABOUT.replace('{OWNER}', cfg.get('ownerName') or 'the VipTools team')
-open(OUT + '/about.html', 'w', encoding='utf-8').write(simple('About | VipTools', 'Learn about VipTools, a free collection of fast, private online tools and how we build and check them.', '/about.html', ABOUT))
-open(OUT + '/contact.html', 'w', encoding='utf-8').write(simple('Contact | VipTools', 'Contact VipTools for questions, feedback, bug reports or tool suggestions.', '/contact.html', CONTACT))
-open(OUT + '/privacy.html', 'w', encoding='utf-8').write(simple('Privacy Policy | VipTools', 'How VipTools handles your data, cookies, analytics and advertising, and your privacy choices.', '/privacy.html', PRIVACY))
-open(OUT + '/terms.html', 'w', encoding='utf-8').write(simple('Terms of Use | VipTools', 'Terms of use for VipTools free online tools.', '/terms.html', TERMS))
+open(OUT + '/about.html', 'w', encoding='utf-8').write(simple('About VIP Tools: Free Online Tools', 'Learn about VIP Tools, a free collection of fast, private online tools, and how we build and check each one for accuracy and clear results.', '/about.html', ABOUT))
+open(OUT + '/contact.html', 'w', encoding='utf-8').write(simple('Contact VIP Tools: Feedback & Support', 'Contact VIP Tools for questions, feedback, bug reports or tool suggestions. We reply by email within 2 to 3 business days.', '/contact.html', CONTACT))
+open(OUT + '/privacy.html', 'w', encoding='utf-8').write(simple('VIP Tools Privacy Policy: Data & Cookies', 'How VIP Tools handles your data, cookies, Google Analytics, AdSense advertising and your privacy rights, explained in plain language.', '/privacy.html', PRIVACY))
+open(OUT + '/terms.html', 'w', encoding='utf-8').write(simple('VIP Tools Terms of Use: Rules & Disclaimers', 'Terms of use for VIP Tools free online tools, covering acceptable use, disclaimers, third-party services and changes to these terms.', '/terms.html', TERMS))
 
-open(OUT + '/404.html', 'w', encoding='utf-8').write(page('Page not found | VipTools',
+open(OUT + '/404.html', 'w', encoding='utf-8').write(page('Page Not Found | VIP Tools',
     'The page you were looking for does not exist. Browse all free VipTools tools.', '/404.html',
     '<section class="page"><h1>Page not found</h1><p>The page you were looking for has moved or does not exist. Try one of our tools instead.</p><p><a class="btn" href="/">Browse all tools</a></p></section>',
     robots='noindex,follow'))
@@ -542,6 +663,15 @@ for u in all_urls:
     sm.append('<url><loc>%s%s</loc><lastmod>%s</lastmod></url>' % (BASE, u, TODAY))
 sm.append('</urlset>')
 open(OUT + '/sitemap.xml', 'w', encoding='utf-8').write('\n'.join(sm) + '\n')
+
+llms = ['# VIP Tools (VipTools)', '', '> VIP Tools (also written VipTools or viptools.online) is a free collection of online tools for text, calculators, developers, YouTube creators and images. Each tool runs in the browser and does not upload the data entered.', '', '## Tools']
+for c_ in CATS:
+    llms.append('')
+    llms.append('### ' + c_[0])
+    for s_ in c_[2]:
+        llms.append('- [%s](%s/tools/%s/): %s' % (T[s_]['name'], BASE, s_, T[s_]['desc'].split('.')[0] + '.'))
+llms += ['', '## Pages', '- [About](%s/about.html)' % BASE, '- [Contact](%s/contact.html)' % BASE, '- [Privacy Policy](%s/privacy.html)' % BASE, '- [Terms of Use](%s/terms.html)' % BASE, '']
+open(OUT + '/llms.txt', 'w', encoding='utf-8').write('\n'.join(llms))
 
 open(OUT + '/robots.txt', 'w').write('User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: https://viptools.online/sitemap.xml\n')
 open(OUT + '/ads.txt', 'w').write(('google.com, pub-%s, DIRECT, f08c47fec0942fa0\n' % ADSENSE[len('ca-pub-'):]) if ADSENSE else '# AdSense line appears here after you set adsenseClient in the admin panel.\n')
@@ -568,6 +698,7 @@ headers = '''/*
   Cache-Control: no-store
 '''
 open(OUT + '/_headers', 'w').write(headers)
+open(OUT + '/_redirects', 'w').write('# One canonical host: send www to the apex domain (301)\nhttps://www.viptools.online/* https://viptools.online/:splat 301\n')
 
 cfg_out = dict(cfg)
 cfg_out.pop('tools', None)
